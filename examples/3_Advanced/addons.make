@@ -1,0 +1,3 @@
+ofxSurfingFxChannel
+ofxGui
+ofxPresetsManager
