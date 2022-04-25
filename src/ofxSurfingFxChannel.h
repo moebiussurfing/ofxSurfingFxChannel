@@ -10,46 +10,41 @@
 // Optional:
 
 #define INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL // new gui
-//#define INCLUDE_ofxGui // simpler gui
-//#define INCLUDE_ofxGuiExtended2 // deprecated gui
+//#define INCLUDE_ofxGui // simpler gui could be activated with smal modifications (TODO)
 
-// 1. to enable ofxPresetsManager. (must add the addon to the project)
+// To enable ofxPresetsManager. (must add the addon to the project)
 //#define INCLUDE_ofxPresetsManager	
 
-// 3. to include some extra fx's: delay and echotrace
+// To include some extra fx's: delay and echotrace
 //#define INCLUDE_FX_DELAYS	
 
 
 //---
 
-///	TODO:
-///	
-///	+	add another paramGroup and move there all settings that must be recalled but not required on gui
-///	+	extra fx: gpu lut?
-///	+	reduce callbacks
+//	TODO:
+//	
+//	extra fx: gpu lut?
+//	reduce callbacks
 
 //---
 
-// fx shaders
+
+// Fx shaders
 #include "ofxDotFrag.h"
 
-//gui
+// Gui
 #ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
 #include "ofxSurfingImGui.h"
 #endif
 
-//gui
+// Gui
 #ifdef INCLUDE_ofxGui
 #include "ofxGui.h"
 #include "ofxSurfing_ofxGui.h"
 #endif
 
-//gui
-#ifdef INCLUDE_ofxGuiExtended2
-#include "ofxGuiExtended2.h"
-#endif
-
-//optional presets manager
+// optional:
+// presets manager
 #ifdef INCLUDE_ofxPresetsManager
 #include "ofxPresetsManager.h"
 #endif
@@ -60,40 +55,19 @@
 
 class ofxSurfingFxChannel
 {
-
-private:
-	// main parameters. usualy to use outside the class as: control & preset
-	ofParameterGroup parameters;
-public:
-	//--------------------------------------------------------------
-	ofParameterGroup getParameters() {// control & preset
-		return parameters;
-	}
-	//--------------------------------------------------------------
-	ofParameterGroup getParameters_Preset() {// to use as preset
-		return params_Preset;
-	}
-
-	//--
-
-private:
-#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	ofxSurfing_ImGui_Manager guiManager; // In MODE A ofxGui will be instatiated inside the class
-	void drawImGui();
-#endif
-
 	//--
 
 public:
+	//--------------------------------------------------------------
 	ofxSurfingFxChannel() {
-		//settings folder
+		// settings folder
 		path_GLOBAL_Folder = "ofxSurfingFxChannel";
 
-		//TODO: not required
+		// TODO: not required
 		path_fileName_Session = "ofxSurfingFxChannel_Session.xml";
 
 #ifndef INCLUDE_ofxPresetsManager
-		path_fileName_Preset = "ofxSurfingFxChannel_Preset.xml";//not used when using presetsManager
+		path_fileName_Preset = "ofxSurfingFxChannel_Preset.xml"; // not used when using presetsManager
 #endif
 
 		ENABLE_FxChain.set("ENABLE", true);
@@ -101,98 +75,11 @@ public:
 		vflip = false;
 	};
 
+	//--------------------------------------------------------------
 	~ofxSurfingFxChannel()
 	{
 		exit();
 	};
-
-	//--
-
-private:
-	void setup_FxChannel();
-	void update_FxChannel();
-
-	void setup_GuiTheme();
-	void refresh_Gui();
-	void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
-	void refresh_ofxGui_minimize(bool bUseSolo = false);
-	void refreshi_ofxGuiExtended_Minimize();
-
-#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	bool bOpenFrag1=true;
-	bool bOpenFrag2=true;
-	bool bOpenFrag3=true;
-	bool bOpenFrag4=true;
-	bool bOpenFrag5=true;
-	bool bOpenFrag6=true;
-#endif
-
-	//--
-
-	// API 
-	// feed the fx processor
-public:
-	void begin();
-	void end();
-
-	ofParameter<bool> ENABLE_FxChain;//main enabler toggle
-
-private:
-	//ofParameter<bool> SHOW_DOT_FX;
-	ofParameter<int> SELECT_Fx{ "SELECT FX", 1, 1, 3 };	//select the fx to edit/show gui panel
-	ofParameter<std::string> SELECT_Fx_Name{ "FX","" };		//fx name
-	ofParameter<bool> SELECT_Solo{ "SOLO", false };		//mute the other fx
-	ofParameter<bool> RESET{ "RESET", false };			//reset selected fx
-	ofParameter<bool> bHeader{ "HEADER", false };
-	ofParameter<bool> SHOW_Gui{ "SHOW GUI", false };
-	ofParameter<bool> SHOW_Presets{ "SHOW PRESETS", true };
-	ofParameter<bool> ENABLE_Keys{ "ENABLE KEYS", true };
-	ofParameter<bool> bMinimize{ "MINIMIZE", false };
-	bool bEnableGuiWorkflow = false;
-
-	ofParameter<bool> ENABLE_Monochrome;
-	ofParameter<bool> ENABLE_ThreeTones;
-	ofParameter<bool> ENABLE_HSB;
-#ifdef INCLUDE_FX_DELAYS
-	ofParameter<bool> ENABLE_Delay;
-	ofParameter<bool> ENABLE_Echotrace;
-#endif
-
-	ofParameterGroup params_Session;
-	ofParameterGroup params_Subcontrol;
-	ofParameterGroup params_Editor;
-	ofParameterGroup params_Preset;
-	ofParameterGroup params_Control;
-
-	// callbacks
-	void Changed_params_Control(ofAbstractParameter &e);
-	bool DISABLE_Callbacks;
-
-	//--
-
-private:
-	ofFbo fbo_FxChain;
-	bool vflip;
-public:
-	void setVflip(bool b) {
-		vflip = b;
-	}
-
-	// dot fx shaders
-
-private:
-	
-	// basic fx
-	ofx::dotfrag::Monochrome frag1;
-	ofx::dotfrag::ThreeTones frag2;
-	ofx::dotfrag::HSB frag3;
-
-	// fx extra
-#ifdef INCLUDE_FX_DELAYS
-	ofx::dotfrag::Delay frag4;
-	ofx::dotfrag::EchoTrace frag5;
-	//ofx::dotfrag::Twist frag6;
-#endif
 
 	//--
 
@@ -212,6 +99,133 @@ private:
 
 	void startup();
 
+	//--
+	
+private:
+	// main parameters. usualy to use outside the class as: control & preset
+	ofParameterGroup parameters;
+public:
+	//--------------------------------------------------------------
+	ofParameterGroup getParameters() {// control & preset
+		return parameters;
+	}
+	//--------------------------------------------------------------
+	ofParameterGroup getParameters_Preset() {// to use as preset
+		return params_Preset;
+	}
+
+	//--
+
+#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
+private:
+	ofxSurfing_ImGui_Manager guiManager; // In MODE A ofxGui will be instatiated inside the class
+	void drawImGui();
+
+	ImGuiTreeNodeFlags flagst;
+	ImGuiTreeNodeFlags fg1;
+	ImGuiTreeNodeFlags fg2;
+	ImGuiTreeNodeFlags fg3;
+	ImGuiTreeNodeFlags fg4;
+	ImGuiTreeNodeFlags fg5;
+	ImGuiTreeNodeFlags fg6;
+
+	// Styles
+	void SetupStyles();
+	void ClearStyles();
+#endif
+
+	//--
+
+private:
+	void setup_FxChannel();
+	void update_FxChannel();
+
+	//--
+	
+	// gui workflow
+	void refresh_Gui();
+	void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
+	void refresh_Gui_minimize(bool bUseSolo = false);
+
+#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
+	bool bOpenFrag1 = true;
+	bool bOpenFrag2 = true;
+	bool bOpenFrag3 = true;
+	bool bOpenFrag4 = true;
+	bool bOpenFrag5 = true;
+	bool bOpenFrag6 = true;
+#endif
+
+	//--
+
+	// API 
+	// feed the fx processor
+public:
+	void begin();
+	void end();
+
+	ofParameter<bool> ENABLE_FxChain;//main enabler toggle
+
+private:
+	ofParameter<int> SELECT_Fx{ "SELECT FX", 1, 1, 3 };	//select the fx to edit/show gui panel
+	ofParameter<std::string> SELECT_Fx_Name{ "FX","" };		//fx name
+	ofParameter<bool> SELECT_Solo{ "SOLO", false };		//mute the other fx
+	ofParameter<bool> RESET{ "RESET", false };			//reset selected fx
+	ofParameter<bool> bGui{ "SHOW GUI", false };
+	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };
+	ofParameter<bool> bKeys{ "Keys", true };
+	ofParameter<bool> bCollapse{ "Collapse", false };
+	ofParameter<bool> bExpand{ "Expand", false };
+	bool bEnableGuiWorkflow = false;
+
+	ofParameter<bool> ENABLE_Monochrome;
+	ofParameter<bool> ENABLE_ThreeTones;
+	ofParameter<bool> ENABLE_HSB;
+
+#ifdef INCLUDE_FX_DELAYS
+	ofParameter<bool> ENABLE_Delay;
+	ofParameter<bool> ENABLE_Echotrace;
+#endif
+
+	ofParameterGroup params_Session;
+	ofParameterGroup params_Subcontrol;
+	ofParameterGroup params_Editor;
+	ofParameterGroup params_Preset;
+	ofParameterGroup params_Control;
+
+	// callbacks
+	void Changed_params_Control(ofAbstractParameter &e);
+	bool bDISABLECALLBACKS;
+
+	//--
+
+	// Fbo
+private:
+	ofFbo fbo_FxChain;
+	bool vflip;
+public:
+	void setVflip(bool b) {
+		vflip = b;
+	}
+
+	//--
+
+	// dot fx shaders
+
+private:
+
+	// basic fx
+	ofx::dotfrag::Monochrome frag1;
+	ofx::dotfrag::ThreeTones frag2;
+	ofx::dotfrag::HSB frag3;
+
+	// fx extra
+#ifdef INCLUDE_FX_DELAYS
+	ofx::dotfrag::Delay frag4;
+	ofx::dotfrag::EchoTrace frag5;
+	//ofx::dotfrag::Twist frag6;
+#endif
+
 public:
 	//--------------------------------------------------------------
 	void loadSettings() {
@@ -219,31 +233,6 @@ public:
 		ofxSurfingHelpers::loadGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
 #endif
 	}
-
-	//gui
-#ifdef INCLUDE_ofxGuiExtended2
-private:
-	ofxGui gui;
-	ofxGuiPanel *guiPanel;
-	ofxGuiGroup2 *guiGroup;
-	ofxGuiGroup2 *gui_FxUser;
-	ofxGuiGroup2 *gui_FxEdit;
-
-	//basic fx
-	ofxGuiGroup2 *gFrag1;
-	ofxGuiGroup2 *gFrag2;
-	ofxGuiGroup2 *gFrag3;
-
-	//extra fx
-#ifdef INCLUDE_FX_DELAYS
-	ofxGuiGroup2 *gFrag4;
-	ofxGuiGroup2 *gFrag5;
-	//ofxGuiGroup2 *gFrag6;
-#endif
-
-	//customize
-	ofJson j_ButtonBig, j_SliderBig;
-#endif
 
 	//--
 
@@ -260,10 +249,6 @@ public:
 private:
 	void setup_PresetsManager();
 	ofParameterGroup params_PresetsManagerTools{ "> PRESETS" };
-#endif
-
-#ifdef INCLUDE_ofxGuiExtended2
-	ofxGuiGroup2* gui_FxPresets;
 #endif
 
 	//--
@@ -294,16 +279,12 @@ public:
 	//--------------------------------------------------------------
 	glm::vec2 getGuiPosition()
 	{
-#ifdef INCLUDE_ofxGuiExtended2
-		position_Gui = glm::vec2(guiPanel->getPosition().x, guiPanel->getPosition().y);
-#endif
-
 #ifdef INCLUDE_ofxGui
 		position_Gui = glm::vec2(gui.getPosition().x, gui.getPosition().y);
 #endif
 
 		return position_Gui.get();
-}
+	}
 	//--------------------------------------------------------------
 	void setGuiPosition(int x, int y) {
 		setGuiPosition(glm::vec2(x, y));
@@ -311,10 +292,6 @@ public:
 	//--------------------------------------------------------------
 	void setGuiPosition(glm::vec2 pos) {
 		position_Gui = pos;
-
-#ifdef INCLUDE_ofxGuiExtended2
-		guiPanel->setPosition(position_Gui.get().x, position_Gui.get().y);
-#endif
 
 #ifdef INCLUDE_ofxGui
 		gui.setPosition(position_Gui.get().x, position_Gui.get().y);
@@ -325,9 +302,6 @@ public:
 	{
 		float _gwidth;
 
-#ifdef INCLUDE_ofxGuiExtended2
-		_gwidth = guiPanel->getWidth();
-#endif
 #ifdef INCLUDE_ofxGui
 		_gwidth = gui.getShape().getWidth();
 #endif
@@ -335,18 +309,11 @@ public:
 	}
 	//--------------------------------------------------------------
 	void setVisibleGui(bool b) {
-		SHOW_Gui = b;
-
-#ifdef INCLUDE_ofxGuiExtended2
-		guiPanel->getVisible().set(b);
-#endif
-
-#ifdef INCLUDE_ofxGui
-#endif
+		bGui = b;
 
 #ifdef INCLUDE_ofxPresetsManager
-		if (SHOW_Presets && SHOW_Gui) setVisible_PresetClicker(true);
-		else if (!SHOW_Gui) setVisible_PresetClicker(false);
+		if (bGui_Presets && bGui) setVisible_PresetClicker(true);
+		else if (!bGui) setVisible_PresetClicker(false);
 #endif
 	}
 
@@ -365,7 +332,7 @@ public:
 
 	//--------------------------------------------------------------
 	void setKeysEnable(bool b) {
-		ENABLE_Keys = b;
+		bKeys = b;
 	}
 	//--------------------------------------------------------------
 	void doReset() {
@@ -383,22 +350,7 @@ public:
 public:
 	//--------------------------------------------------------------
 	void setEnableKeys(bool b) {
-		ENABLE_Keys = b;
+		bKeys = b;
 	}
 	void keyPressed(int key);
-
-	//-
-
-#ifdef INCLUDE_ofxGuiExtended2
-private:
-	std::string path_Theme;
-
-public:
-	//--------------------------------------------------------------
-	void loadTheme(std::string _path) {
-		ofLogNotice(__FUNCTION__) << " : " << path_Theme;
-		path_Theme = _path;
-		guiPanel->loadTheme(path_Theme);
-	}
-#endif
 };

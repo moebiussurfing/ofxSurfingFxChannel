@@ -2,17 +2,16 @@
 
 #include "ofMain.h"
 
+
 // NOTE ABOUT THIS EXAMPLE:
 //
 // to run this example out-of-the-box you must disable the presets manager addon
 // commenting this line on ofxSurfingFxChannel.h 
 //#define INCLUDE_ofxPresetsManager // presets manager
-//
-// you can choice one of the two implemented gui's:
-//#define INCLUDE_ofxGui // simpler gui
-//#define INCLUDE_ofxGuiExtended2 // better gui
+
 
 #include "ofxSurfingFxChannel.h"
+#include "ofxWindowApp.h"
 
 class ofApp : public ofBaseApp{
 
@@ -27,4 +26,6 @@ class ofApp : public ofBaseApp{
 		ofxSurfingFxChannel channelFx;
 
 		ofImage img;
+
+		ofxWindowApp windowApp;
 };
