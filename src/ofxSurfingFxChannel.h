@@ -121,7 +121,7 @@ private:
 	ofxSurfing_ImGui_Manager guiManager; // In MODE A ofxGui will be instatiated inside the class
 	void drawImGui();
 
-	ImGuiTreeNodeFlags flagst;
+	ImGuiTreeNodeFlags fg0;
 	ImGuiTreeNodeFlags fg1;
 	ImGuiTreeNodeFlags fg2;
 	ImGuiTreeNodeFlags fg3;
@@ -146,14 +146,15 @@ private:
 	void refresh_Gui();
 	void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
 	void refresh_Gui_minimize(bool bUseSolo = false);
+	void refresh_Gui_Solos();
 
 #ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	bool bOpenFrag1 = true;
-	bool bOpenFrag2 = true;
-	bool bOpenFrag3 = true;
-	bool bOpenFrag4 = true;
-	bool bOpenFrag5 = true;
-	bool bOpenFrag6 = true;
+	bool bOpenFrag1 = false;
+	bool bOpenFrag2 = false;
+	bool bOpenFrag3 = false;
+	bool bOpenFrag4 = false;
+	bool bOpenFrag5 = false;
+	//bool bOpenFrag6 = false;
 #endif
 
 	//--
@@ -164,19 +165,19 @@ public:
 	void begin();
 	void end();
 
-	ofParameter<bool> ENABLE_FxChain;//main enabler toggle
+	ofParameter<bool> ENABLE_FxChain; // main enabler toggle
 
 private:
 	ofParameter<int> SELECT_Fx{ "SELECT FX", 1, 1, 3 };	//select the fx to edit/show gui panel
 	ofParameter<std::string> SELECT_Fx_Name{ "FX","" };		//fx name
-	ofParameter<bool> SELECT_Solo{ "SOLO", false };		//mute the other fx
-	ofParameter<bool> RESET{ "RESET", false };			//reset selected fx
+	ofParameter<bool> bSolo{ "SOLO", false };		//mute the other fx
+	ofParameter<bool> bRESET{ "RESET", false };			//reset selected fx
 	ofParameter<bool> bGui{ "SHOW GUI", false };
 	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };
 	ofParameter<bool> bKeys{ "Keys", true };
 	ofParameter<bool> bCollapse{ "Collapse", false };
 	ofParameter<bool> bExpand{ "Expand", false };
-	bool bEnableGuiWorkflow = false;
+	bool bEnableGuiWorkflow = true;
 
 	ofParameter<bool> ENABLE_Monochrome;
 	ofParameter<bool> ENABLE_ThreeTones;
@@ -336,7 +337,7 @@ public:
 	}
 	//--------------------------------------------------------------
 	void doReset() {
-		RESET = true;
+		bRESET = true;
 	}
 
 	ofParameterGroup params_ControlExternal;
