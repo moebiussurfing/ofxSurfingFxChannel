@@ -7,48 +7,46 @@
 
 //----
 
+// Optional:
+
+#define INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL // new gui
+//#define INCLUDE_ofxGui // simpler gui
+//#define INCLUDE_ofxGuiExtended2 // deprecated gui
 
 // 1. to enable ofxPresetsManager. (must add the addon to the project)
 //#define INCLUDE_ofxPresetsManager	
 
-// 2. you can choice one of the two implemented gui's:
-//#define INCLUDE_ofxGui // simpler gui
-#define INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL // simpler gui
-//#define INCLUDE_ofxGuiExtended2 // better gui
-
 // 3. to include some extra fx's: delay and echotrace
-#define INCLUDE_FX_DELAYS	
+//#define INCLUDE_FX_DELAYS	
 
 
-//----
+//---
 
-///	
 ///	TODO:
 ///	
 ///	+	add another paramGroup and move there all settings that must be recalled but not required on gui
 ///	+	extra fx: gpu lut?
 ///	+	reduce callbacks
-///	
 
-//----
+//---
 
-//fx shaders
+// fx shaders
 #include "ofxDotFrag.h"
 
-//gui1
+//gui
+#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
+#include "ofxSurfingImGui.h"
+#endif
+
+//gui
 #ifdef INCLUDE_ofxGui
 #include "ofxGui.h"
 #include "ofxSurfing_ofxGui.h"
 #endif
 
-//gui2
+//gui
 #ifdef INCLUDE_ofxGuiExtended2
 #include "ofxGuiExtended2.h"
-#endif
-
-//gui3
-#ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-#include "ofxSurfingImGui.h"
 #endif
 
 //optional presets manager
@@ -131,7 +129,8 @@ private:
 
 	//--
 
-	//feed the fx processor
+	// API 
+	// feed the fx processor
 public:
 	void begin();
 	void end();
@@ -165,7 +164,7 @@ private:
 	ofParameterGroup params_Preset;
 	ofParameterGroup params_Control;
 
-	//callbacks
+	// callbacks
 	void Changed_params_Control(ofAbstractParameter &e);
 	bool DISABLE_Callbacks;
 
@@ -179,14 +178,16 @@ public:
 		vflip = b;
 	}
 
-	//dot fx shaders
+	// dot fx shaders
+
 private:
-	//basic fx
+	
+	// basic fx
 	ofx::dotfrag::Monochrome frag1;
 	ofx::dotfrag::ThreeTones frag2;
 	ofx::dotfrag::HSB frag3;
 
-	//fx extra
+	// fx extra
 #ifdef INCLUDE_FX_DELAYS
 	ofx::dotfrag::Delay frag4;
 	ofx::dotfrag::EchoTrace frag5;
@@ -252,7 +253,7 @@ private:
 
 	//--
 
-	//presetsManager
+	// presetsManager
 #ifdef INCLUDE_ofxPresetsManager
 public:
 	ofxPresetsManager presetsManager;
@@ -267,7 +268,7 @@ private:
 
 	//--
 
-	//settings
+	// settings
 private:
 	std::string path_GLOBAL_Folder;
 	std::string path_fileName_Session;

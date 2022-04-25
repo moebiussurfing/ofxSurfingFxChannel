@@ -1,6 +1,6 @@
-ofxGui
-ofxGuiExtended2
 ofxImGui
+ofxScaleDragRect
 ofxSurfingFxChannel
 ofxSurfingHelpers
 ofxSurfingImGui
+ofxWindowApp

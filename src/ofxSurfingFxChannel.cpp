@@ -71,14 +71,14 @@ void ofxSurfingFxChannel::setup()
 	//	});
 
 #ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	guiManager.setImGuiAutodraw(true); // -> required when only one single ImGui instance is instantiated on all the oF project.
+	//guiManager.setImGuiAutodraw(true); // -> required when only one single ImGui instance is instantiated on all the oF project.
 	guiManager.setup(); // ofxImGui is instantiated inside the class, the we can forgot of declare ofxImGui here (ofApp scope).
-	guiManager.bAutoResize = false;
+	//guiManager.bAutoResize = false;
 #endif
 
 	//----
 
-	//startup 
+	// startup 
 	startup();
 
 }
@@ -117,7 +117,7 @@ void ofxSurfingFxChannel::startup()
 
 	//-
 
-	//refresh
+	// refresh
 
 	bEnableGuiWorkflow = true;
 
@@ -161,7 +161,7 @@ void ofxSurfingFxChannel::startup()
 //	setGuiVisible(b);
 //	setKeysEnable(b);
 //}
-//
+
 ////--------------------------------------------------------------
 //void ofxSurfingFxChannel::setKeysEnable(bool b)
 //{
@@ -173,9 +173,9 @@ void ofxSurfingFxChannel::startup()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setup_FxChannel()
 {
-	//parameters
+	// parameters
 
-	//customize names to tweak gui labels
+	// customize names to tweak gui labels
 	frag1.parameters.setName("1 " + frag1.parameters.getName());
 	frag2.parameters.setName("2 " + frag2.parameters.getName());
 	frag3.parameters.setName("3 " + frag3.parameters.getName());
@@ -186,7 +186,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	//-
 
-	//gui layout
+	// gui layout
 	position_Gui.set("GUI POSITION",
 		glm::vec2(window_W * 0.5, window_H * 0.5),
 		glm::vec2(0, 0),
@@ -195,11 +195,11 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	//--
 
-	//presets params
+	// presets params
 
 	params_Preset.setName("FX_CHANNEL");
 
-	//fx
+	// fx
 	//params_Preset.add(ENABLE_FxChain);
 
 	params_Preset.add(frag1.parameters);
@@ -213,7 +213,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	SELECT_Fx.setMax(5);
 #endif
 
-	//exclude
+	// exclude
 	SELECT_Fx_Name.setSerializable(false);
 	RESET.setSerializable(false);
 
@@ -225,9 +225,9 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	params_Session.add(position_Gui);
 	params_Session.add(bHeader);
 
-	//gui
+	// gui
 
-	//1. user
+	// 1. user
 
 	params_Subcontrol.setName("CONTROL");
 	params_Subcontrol.add(SELECT_Fx);
@@ -235,8 +235,8 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	params_Subcontrol.add(SELECT_Solo);
 	params_Subcontrol.add(RESET);
 
-	//2. edit
-	//linked enablers
+	// 2. edit
+	// linked enablers
 	ENABLE_Monochrome.makeReferenceTo(frag1.active);
 	ENABLE_ThreeTones.makeReferenceTo(frag2.active);
 	ENABLE_HSB.makeReferenceTo(frag3.active);
@@ -255,7 +255,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	params_Subcontrol.add(ENABLE_ThreeTones);
 	params_Subcontrol.add(ENABLE_HSB);
 
-	//extra fx
+	// extra fx
 #ifdef INCLUDE_FX_DELAYS
 	params_Subcontrol.add(ENABLE_Delay);
 	params_Subcontrol.add(ENABLE_Echotrace);
@@ -263,15 +263,15 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	//-
 
-	//main group for settings and callback
+	// main group for settings and callback
 	params_Control.setName("ofxSurfingFxChannel");
 	params_Control.add(params_Subcontrol);
 	params_Control.add(params_Preset);
 
 	//--
 
-	//ofxGuiExtended
-	//populate widgets
+	// ofxGuiExtended
+	// populate widgets
 #ifdef INCLUDE_ofxGuiExtended2
 	guiPanel = gui.addPanel("CHANNEL FX");
 	guiGroup = guiPanel->addGroup("CHANNEL FX", ofJson{ {"show-header", false} });//avoid double header
@@ -290,7 +290,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	//-
 
-	//main sub panels
+	// main sub panels
 
 #ifdef INCLUDE_ofxPresetsManager
 
@@ -438,11 +438,11 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 		//----
 
-		//select
+		// select
 
 		else if (name == "SELECT FX")
 		{
-			//if solo mutes all and enables selected
+			// if solo mutes all and enables selected
 			if (SELECT_Solo.get())
 			{
 				frag1.active = false;
@@ -477,7 +477,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 				}
 			}
 
-			//set the name for selected
+			// set the name for selected
 			switch (SELECT_Fx.get())
 			{
 			case 0:
@@ -536,6 +536,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 				frag1.active = false;
 				frag2.active = false;
 				frag3.active = false;
+
 #ifdef INCLUDE_FX_DELAYS
 				frag4.active = false;
 				frag5.active = false;
@@ -571,6 +572,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 				case 1:
 				case 2:
 				case 3:
+
 #ifdef INCLUDE_FX_DELAYS
 				case 4:
 				case 5:
@@ -578,6 +580,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 					frag1.active = true;
 					frag2.active = true;
 					frag3.active = true;
+
 #ifdef INCLUDE_FX_DELAYS
 					frag4.active = true;
 					frag5.active = true;
@@ -589,7 +592,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 		//----
 
-		//enabler toggles
+		// enabler toggles
 
 		else if (name == ENABLE_Monochrome.getName())
 		{
@@ -661,14 +664,14 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 		//----
 
-		//reset
+		// reset
 
 		else if (name == RESET.getName())
 		{
 			if (RESET.get()) {
 				RESET = false;
 
-				//reset all fx
+				// reset all fx
 				{
 					frag1.active = false;
 					frag1.low = 0;
@@ -754,7 +757,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 		//----
 
-		//minimize
+		// minimize
 
 		else if (name == bMinimize.getName())
 		{
@@ -782,7 +785,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 			}
 		}
 
-		//show presets
+		// show presets
 
 #ifdef USE_ofxPresetsManager
 		else if (name == SHOW_Presets.getName())
@@ -791,7 +794,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 		}
 #endif
 
-		//enable keys
+		// enable keys
 
 		else if (name == ENABLE_Keys.getName())
 		{
@@ -802,7 +805,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 		//----
 
-		//header
+		// header
 
 		else if (name == bHeader.getName())
 		{
@@ -858,12 +861,12 @@ void ofxSurfingFxChannel::update_FxChannel()
 {
 	if (ENABLE_FxChain)
 	{
-		//fx
+		// fx
 		frag1.apply(fbo_FxChain);
 		frag3.apply(fbo_FxChain);
 		frag2.apply(fbo_FxChain);
 
-		//extra fx
+		// extra fx
 #ifdef INCLUDE_FX_DELAYS
 		frag4.apply(fbo_FxChain);
 		frag5.apply(fbo_FxChain);
@@ -878,7 +881,7 @@ void ofxSurfingFxChannel::windowResized(int _w, int _h)
 	window_W = _w;
 	window_H = _h;
 
-	//resize fbo
+	// resize fbo
 	fboAllocate();
 }
 
@@ -921,10 +924,10 @@ void ofxSurfingFxChannel::drawImGui()
 	{
 		static bool bOpen1 = true;
 
-		// Minimal sizes
-		float ww = PANEL_WIDGETS_WIDTH_MIN;
-		float hh = PANEL_WIDGETS_HEIGHT_MIN;
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
+		//// Minimal sizes
+		//float ww = PANEL_WIDGETS_WIDTH_MIN;
+		//float hh = PANEL_WIDGETS_HEIGHT_MIN;
+		//ImGui::PushStyleVar(ImGuiStyleVar_WindowMinSize, ImVec2(ww, hh));
 		{
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 			if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
@@ -932,32 +935,40 @@ void ofxSurfingFxChannel::drawImGui()
 			guiManager.beginWindow("Surfing Channel", &bOpen1, window_flags);
 			{
 				{
-					// Snippet to handle common widgets sizes:
-					float _w1; // full width
-					float _w2; // half width
-					float _w3; // third width
-					float _w4; // quarter width
-					float _h; // standard height
+					//// Snippet to handle common widgets sizes:
+					//float _w1; // full width
+					//float _w2; // half width
+					//float _w3; // third width
+					//float _w4; // quarter width
+					//float _h; // standard height
 
-					// We will update the sizes on any gui drawing required point, 
-					// like inside a new foldered sub-window that could be indendeted and full-width size is being smaller.
-					ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
+					//// We will update the sizes on any gui drawing required point, 
+					//// like inside a new foldered sub-window that could be indendeted and full-width size is being smaller.
+					//ofxImGuiSurfing::refreshImGui_WidgetsSizes(_w1, _w2, _w3, _w4, _h);
 
 					// Here we will add some ofParamaters usign customized responsive layout of many widgets types!
 
 					//-
 
-					if (ofxImGuiSurfing::AddBigToggle(ENABLE_FxChain)) {} // this is full width (_w1) with standard height (_h)
-					if (ofxImGuiSurfing::AddBigToggle(bMinimize, _w1, _h / 2)) {} // same width but half height
-					//if (ofxImGuiSurfing::AddBigToggle(bHeader, _w1, _h / 2)) {} // same width but half height
-#ifdef USE_ofxPresetsManager
-					if (ofxImGuiSurfing::AddBigToggle(SHOW_Presets, _w1, _h / 2)) {}
-#endif
-					ofxImGuiSurfing::AddToggleRoundedButton(ENABLE_Keys);
+					guiManager.Add(ENABLE_FxChain, OFX_IM_TOGGLE_BIG);
+					guiManager.Add(bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+					guiManager.Add(ENABLE_Keys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+					ImGui::Spacing();
+					guiManager.AddGroup(params_Subcontrol);
 					
-					ImGui::Dummy(ImVec2(0, 2));
 
-					ofxImGuiSurfing::AddGroup(params_Subcontrol); // a group
+//					if (ofxImGuiSurfing::AddBigToggle(ENABLE_FxChain)) {} // this is full width (_w1) with standard height (_h)
+//					if (ofxImGuiSurfing::AddBigToggle(bMinimize, _w1, _h / 2)) {} // same width but half height
+//					//if (ofxImGuiSurfing::AddBigToggle(bHeader, _w1, _h / 2)) {} // same width but half height
+//#ifdef USE_ofxPresetsManager
+//					if (ofxImGuiSurfing::AddBigToggle(SHOW_Presets, _w1, _h / 2)) {}
+//#endif
+//					ofxImGuiSurfing::AddToggleRoundedButton(ENABLE_Keys);
+//					
+//					ImGui::Dummy(ImVec2(0, 2));
+//
+//					ofxImGuiSurfing::AddGroup(params_Subcontrol); // a group
+
 
 					ImGuiTreeNodeFlags flagst;
 					flagst = ImGuiTreeNodeFlags_None;
@@ -978,23 +989,33 @@ void ofxSurfingFxChannel::drawImGui()
 					if (bOpenFrag5) fg5 |= ImGuiTreeNodeFlags_DefaultOpen;
 					if (bOpenFrag6) fg6 |= ImGuiTreeNodeFlags_DefaultOpen;
 
-					ImGui::Dummy(ImVec2(0, 2));
-
-					ofxImGuiSurfing::AddGroup(frag1.parameters, fg1, IM_GUI_GROUP_DEFAULT);
-					ofxImGuiSurfing::AddGroup(frag2.parameters, fg2, IM_GUI_GROUP_DEFAULT);
-					ofxImGuiSurfing::AddGroup(frag3.parameters, fg3, IM_GUI_GROUP_DEFAULT);
-
+					ImGui::Spacing();
+					guiManager.AddGroup(frag1.parameters, fg1);
+					guiManager.AddGroup(frag2.parameters, fg2);
+					guiManager.AddGroup(frag3.parameters, fg3);
 #ifdef INCLUDE_FX_DELAYS
-					ofxImGuiSurfing::AddGroup(frag4.parameters, fg4, IM_GUI_GROUP_DEFAULT);
-					ofxImGuiSurfing::AddGroup(frag5.parameters, fg5, IM_GUI_GROUP_DEFAULT);
+					guiManager.AddGroup(frag4.parameters, fg4);
+					guiManager.AddGroup(frag5.parameters, fg5);
 #endif
-					ofxImGuiSurfing::AddGroup(parameters, fg6, IM_GUI_GROUP_DEFAULT); // a group
+					guiManager.AddGroup(parameters, fg6); // a group
+
+
+//					ImGui::Dummy(ImVec2(0, 2));
+//					ofxImGuiSurfing::AddGroup(frag1.parameters, fg1);
+//					ofxImGuiSurfing::AddGroup(frag2.parameters, fg2);
+//					ofxImGuiSurfing::AddGroup(frag3.parameters, fg3);
+//
+//#ifdef INCLUDE_FX_DELAYS
+//					ofxImGuiSurfing::AddGroup(frag4.parameters, fg4);
+//					ofxImGuiSurfing::AddGroup(frag5.parameters, fg5);
+//#endif
+//					ofxImGuiSurfing::AddGroup(parameters, fg6); // a group
 
 				}
 			}
 			guiManager.endWindow();
 		}
-		ImGui::PopStyleVar();
+		//ImGui::PopStyleVar();
 	}
 	guiManager.end(); // global end
 }
@@ -1004,19 +1025,19 @@ void ofxSurfingFxChannel::setup_GuiTheme()
 {
 #ifdef INCLUDE_ofxGuiExtended2
 
-	//default
+	// default
 	guiPanel->setPosition(20, 20);
 
 	//-
 
-	//theme
+	// theme
 	path_Theme = "assets/theme/";
 	path_Theme += "theme_ofxGuiExtended2_01.json";
 	loadTheme(path_Theme);
 
 	//-
 
-	//remove alpha slider from colors
+	// remove alpha slider from colors
 	auto g0 = gFrag2->getGroup(frag2.parameters.getName())->getGroup("COLOR 0");
 	auto g1 = gFrag2->getGroup(frag2.parameters.getName())->getGroup("COLOR 1");
 	auto g2 = gFrag2->getGroup(frag2.parameters.getName())->getGroup("COLOR 2");
@@ -1112,7 +1133,7 @@ void ofxSurfingFxChannel::refresh_ofxGuiExtended_Check() {// for gui extended on
 
 #ifdef INCLUDE_ofxGuiExtended2
 
-	//all fx disabled
+	// all fx disabled
 	if ((!ENABLE_Monochrome.get()) && (!ENABLE_HSB.get()) && (!ENABLE_ThreeTones.get())
 #ifdef INCLUDE_FX_DELAYS
 		&& (!ENABLE_Delay.get()) && (!ENABLE_Echotrace.get())
@@ -1128,7 +1149,7 @@ void ofxSurfingFxChannel::refresh_ofxGuiExtended_Check() {// for gui extended on
 #endif
 	}
 
-	//if some fx enabled and all are minimized
+	// if some fx enabled and all are minimized
 	else if
 		(
 			gFrag1->getMinimized() &&
@@ -1156,7 +1177,7 @@ void ofxSurfingFxChannel::refresh_ofxGuiExtended_Check() {// for gui extended on
 	//--
 
 #ifdef INCLUDE_IM_GUI__OFX_SURFING_FX_CHANNEL
-		//all fx disabled
+		// all fx disabled
 	if ((!ENABLE_Monochrome.get()) && (!ENABLE_HSB.get()) && (!ENABLE_ThreeTones.get())
 #ifdef INCLUDE_FX_DELAYS
 		&& (!ENABLE_Delay.get()) && (!ENABLE_Echotrace.get())
@@ -1173,7 +1194,7 @@ void ofxSurfingFxChannel::refresh_ofxGuiExtended_Check() {// for gui extended on
 #endif
 	}
 
-	//if some fx enabled and all are minimized
+	// if some fx enabled and all are minimized
 	else if
 		(
 			!bOpenFrag1 &&
@@ -1212,7 +1233,7 @@ void ofxSurfingFxChannel::refresh_ofxGui_minimize(bool bUseSolo)// for ofxGui mo
 	//gus.minimize();
 	//gfx.minimize();
 
-	//frags
+	// frags
 	auto &gd1 = gfx.getGroup(frag1.parameters.getName());
 	auto &gd2 = gfx.getGroup(frag2.parameters.getName());
 	auto &gd3 = gfx.getGroup(frag3.parameters.getName());
@@ -1231,8 +1252,8 @@ void ofxSurfingFxChannel::refresh_ofxGui_minimize(bool bUseSolo)// for ofxGui mo
 
 	if (bUseSolo)
 	{
-		//workflow
-		//expand selected fx panel
+		// workflow
+		// expand selected fx panel
 		//if (SELECT_Solo.get())
 		{
 			switch (SELECT_Fx.get())
@@ -1261,8 +1282,8 @@ void ofxSurfingFxChannel::refresh_ofxGui_minimize(bool bUseSolo)// for ofxGui mo
 		bOpenFrag5 = false;
 		bOpenFrag6 = false;
 
-		//workflow
-		//expand selected fx panel
+		// workflow
+		// expand selected fx panel
 		//if (SELECT_Solo.get())
 		if (bUseSolo)
 		{
@@ -1285,7 +1306,7 @@ void ofxSurfingFxChannel::refresh_ofxGui_minimize(bool bUseSolo)// for ofxGui mo
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::refresh_Gui()// extended or simple gui
 {
-	//TODO: maybe there's some refresh method duplicated..
+	// TODO: maybe there's some refresh method duplicated..
 
 	ofLogNotice(__FUNCTION__);
 
@@ -1293,7 +1314,7 @@ void ofxSurfingFxChannel::refresh_Gui()// extended or simple gui
 
 #ifdef INCLUDE_ofxGuiExtended2
 
-	//minimize all
+	// minimize all
 	gFrag1->minimize();
 	gFrag2->minimize();
 	gFrag3->minimize();
@@ -1305,8 +1326,8 @@ void ofxSurfingFxChannel::refresh_Gui()// extended or simple gui
 
 	//-
 
-	//workflow
-	//expand selected fx panel
+	// workflow
+	// expand selected fx panel
 	//if (SELECT_Solo.get())
 	{
 		switch (SELECT_Fx.get())
@@ -1363,10 +1384,10 @@ void ofxSurfingFxChannel::exit()
 	presetsManager.exit();
 #endif
 
-	//callback
+	// callback
 	ofRemoveListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed_params_Control);
 
-	//settings 
+	// settings 
 
 #ifndef INCLUDE_ofxPresetsManager
 	ofxSurfingHelpers::saveGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
