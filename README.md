@@ -85,7 +85,7 @@ Optional:
 An addon by **@moebiusSurfing**  
 *( ManuMolina ) 2019-2022*  
 
-### Contact / Follow
+### Contact / Tune
 <p>
 <a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
 <a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
