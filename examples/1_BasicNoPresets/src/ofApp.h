@@ -11,7 +11,8 @@
 
 
 #include "ofxSurfingFxChannel.h"
-#include "ofxWindowApp.h"
+
+#include "ofxWindowApp.h" //-> not required
 
 class ofApp : public ofBaseApp{
 
@@ -19,8 +20,6 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-		void exit();
-		void keyPressed(int key);
 		void windowResized(int w, int h);
 
 		ofxSurfingFxChannel channelFx;

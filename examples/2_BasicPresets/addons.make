@@ -1,2 +1,6 @@
+ofxImGui
 ofxSurfingFxChannel
-ofxPresetsManager
+ofxSurfingHelpers
+ofxSurfingImGui
+ofxSurfingPresets
+ofxWindowApp

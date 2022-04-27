@@ -1,7 +1,8 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup() {
+void ofApp::setup()
+{
 	ofSetBackgroundColor(0);
 	img.load("image.jpg");
 
@@ -9,9 +10,11 @@ void ofApp::setup() {
 }
 
 //--------------------------------------------------------------
-void ofApp::update() {
-	channelFx.begin();
+void ofApp::update() 
+{
+	channelFx.begin(); //-> feed your scene inside
 	{
+		// animated zoom
 		float scale = (ofGetFrameNum() % 600) / 600.f;
 		ofScale(ofMap(scale, 0, 1, 1, 1.2));
 		img.draw(0, 0, ofGetWidth(), ofGetHeight());
@@ -20,22 +23,14 @@ void ofApp::update() {
 }
 
 //--------------------------------------------------------------
-void ofApp::draw() {
-	channelFx.draw();
-	channelFx.drawGui();
+void ofApp::draw() 
+{
+	channelFx.draw(); //-> draw the processed image
+	channelFx.drawGui(); //-> draw gui
 }
 
 //--------------------------------------------------------------
-void ofApp::exit() {
-	//channelFx.exit();
-}
-
-//--------------------------------------------------------------
-void ofApp::keyPressed(int key) {
-	channelFx.keyPressed(key);
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) {
-	channelFx.windowResized(w, h);
+void ofApp::windowResized(int w, int h)
+{
+	channelFx.windowResized(w, h); //-> update required when window size changes
 }
