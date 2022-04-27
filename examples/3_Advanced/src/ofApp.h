@@ -2,28 +2,35 @@
 
 #include "ofMain.h"
 
-// this example includes webcam source input
+
+//--
 
 // NOTE ABOUT THIS EXAMPLE:
-//
-// to run this example out-of-the-box you must enable the presets manager addon
-// un-commenting this line on ofxSurfingFxChannel.h 
-//#define INCLUDE_ofxPresetsManager		// presets manager
-//
-// and you have to disable both of the two implemented gui's by commenting:
-//#define INCLUDE_ofxGuiExtended2	// better gui
-//#define INCLUDE_ofxGui	// simpler gui
+
+// To run this example out-of-the-box you must enable the presets manager add-on
+// uncommenting this line on ofxSurfingFxChannel.h 
+// to pick a Presets Manager:
+//#define USE_ofxSurfingPresets // 1. Simpler and recommended or
+
+// This example includes a webcam source input to be processed live.
+// Should crash if any camera is detected!
+
+
+//--
+
 
 #include "ofxSurfingFxChannel.h"
 
-//#define USE_ofxWindowApp
+#define USE_ofxWindowApp
 #ifdef USE_ofxWindowApp
 #include "ofxWindowApp.h"
 #endif
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp
+{
 	public:
-		//webcam
+
+		// Webcam
 		ofVideoGrabber vidGrabber;
 		void setupWebcamDevice();
 		void drawWebcamInfo();
@@ -40,28 +47,22 @@ class ofApp : public ofBaseApp{
 		void keyPressed(int key);
 		void windowResized(int w, int h);
 
-		//ofxSurfingFxChannel
 		ofxSurfingFxChannel channelFx;
 
-		//draw
+		// draw
 		void setupScene();
 		void drawScene();
 		
-		//3D scene
+		// 3D scene
 		void draw3D();
 		ofEasyCam cam;
 		
 #ifdef USE_ofxWindowApp
 		ofxWindowApp windowApp;
 #endif
-		int _prim = 0;
+		int _prim = 1;
 		ofBoxPrimitive box;
 		ofConePrimitive cone;
 
 		ofTrueTypeFont font;
-
-		////material
-		//bool bUseMaterial = false;
-		//ofLight light;
-		//ofMaterial material;
 };

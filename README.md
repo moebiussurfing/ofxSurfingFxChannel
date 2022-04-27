@@ -1,23 +1,30 @@
 ofxSurfingFxChannel
 =============================
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Stage: beta](https://img.shields.io/badge/-alpha-red)
 
 # Overview
-**ofxSurfingFxChannel** is an **openFrameworks** addon to image processing with common effects: HSB, contrast, monochrome, tree tones colors, and delays.
-Powered by **ofxDotFrag**.
+
+**ofxSurfingFxChannel** is an **openFrameworks** add-on to live image processing with common effects:  
+HSB, Contrast, Brightness, Saturation, Hue, Monochrome, Tree Tones Colors, and Delays.
+
+Powered by **ofxDotFrag** from [npisanti](https://github.com/npisanti).
 
 ## Screenshots
-Example with **ofxGuiExtended**:  
-![image](/readme_images/Capture2.PNG?raw=true "image")
 
-Example with **ofxPresetsManager**:  
 ![image](/readme_images/Capture1.PNG?raw=true "image")
 
+![image](/readme_images/Capture2.PNG?raw=true "image")
+
+![image](/readme_images/Capture3.PNG?raw=true "image")
+
 ## Features
-- Channel Strip to do image processing with usually useful effects.
+- Channel Strip to do image processing with common useful effects.
 - Monochrome, Three Tones, Hue/Saturation/Brightness/Contrast, Delay, and Echo Trace effects.
-- Powered by the shaders of **ofxDotFrag**.
+- Powered by the shaders of [ofxDotFrag](https://github.com/npisanti/ofxDotFrag).
 - Store/Recall settings.
-- Implemented GUI's workflow for **ofxGui** or **ofxGuiExtended** and **ofxPresetsManager**.
+- Optional Presents Manager.
+- Implemented GUI's workflow for **ofxImGui** or **ofxGui**.
 
 ## Usage
 Check examples.  
@@ -30,19 +37,22 @@ ofxSurfingFxChannel channelFx;
 
 ### ofApp.cpp
 ```.cpp
-ofApp::setup(){
+ofApp::setup()
+{
 	channelFx.setup();
 }
 
-ofApp::update(){
+ofApp::update()
+{
 	channelFx.begin();
 	{
-	// draw here //
+		// draw here!
 	}
 	channelFx.end();
 }
 
-ofApp::draw(){
+ofApp::draw()
+{
 	channelFx.draw();
 	channelFx.drawGui();
 }
@@ -50,21 +60,37 @@ ofApp::draw(){
 
 ## Dependencies
 
-- ofxDotFrag (https://github.com/npisanti/ofxDotFrag) **Already included into ADDON/libs. No need to add.**    
-- ofxSurfingHelpers (https://github.com/moebiussurfing/ofxSurfingHelpers)  
+* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+* [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [_Fork_]  
 
-**Optional**  
-- ofxGui  
-- ofxGuiExtended2 (https://github.com/moebiussurfing/ofxGuiExtended2)  
-- ofxPresetsManager (https://github.com/moebiussurfing/ofxPresetsManager)  
+**Already included into ADDON/libs. No need to add.**    
+* [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) 
 
-## Tested systems
-- **Windows10** / **VS2017** / **OF ~0.11**
-- **macOS High Sierra** / **Xcode 9/10** / **OF ~0.11**
+Optional:  
+* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  
+* ofxGui [_Core_]  
+
+<details>
+  <summary>Tested Systems</summary>
+  <p>
+
+  - **Windows 10** / **VS 2017** / **OF ~0.11**
+  </p>
+</details>
 
 ## Author
-Addon by **@moebiusSurfing**  
-*(ManuMolina). 2020.*
+An addon by **@moebiusSurfing**  
+*( ManuMolina ) 2019-2021*  
 
-## License
-*MIT License.*
+### Contact / Follow
+<p>
+<a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
+<a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
+<a href="https://www.youtube.com/moebiusSurfing" rel="nofollow">YouTube</a> | 
+<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> | 
+<a href="https://github.com/moebiussurfing" target="_blank">GitHub</a> 
+</p>
+
+### License
+MIT License

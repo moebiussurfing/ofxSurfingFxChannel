@@ -2,24 +2,17 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-#ifdef USE_ofxWindowApp
-	windowApp.setFrameRate(60);
-	windowApp.setVerticalSync(true);
-#endif
 
 	setupScene();
 
 	//--
 
-	//webcam
+	// webcam
 	setupWebcamDevice();
 
 	//--
 
-	//ofxSurfingFxChannel
 	channelFx.setup();
-	channelFx.setGuiPosition(glm::vec2(ofGetWidth() - 230, 10));
-	channelFx.setEnableKeys(true);
 }
 
 //--------------------------------------------------------------
@@ -28,8 +21,6 @@ void ofApp::update() {
 
 	//-
 
-	//ofxSurfingFxChannel
-	//feed
 	channelFx.begin();
 	{
 		drawScene();
@@ -43,16 +34,15 @@ void ofApp::draw() {
 
 	//--
 
-	//ofxSurfingFxChannel
-	//draw processed
 	channelFx.draw();
+	channelFx.drawGui();
 
 	//--
 
 	drawWebcamInfo();
 }
 
-//scene
+// scene
 //--------------------------------------------------------------
 void ofApp::setupScene() {
 	string str = "overpass-mono-bold.otf";
@@ -62,15 +52,15 @@ void ofApp::setupScene() {
 
 	//--
 
-	//prims
+	// prims
 
-	//box
+	// box
 	float _size = 100;
 	box.set(_size);
 	box.setPosition(0, _size * 0.5, 0);
 	box.setResolution(1);
 
-	//cone
+	// cone
 	float _cSize = 1.62 * _size;
 	cone.set(_size, _cSize, 3, 1, 1);
 	cone.setPosition(0, _cSize * 0.5, 0);
@@ -80,25 +70,6 @@ void ofApp::setupScene() {
 	cam.enableOrtho();
 	cam.setFarClip(10000);
 	cam.setNearClip(-10000);
-
-	//--
-
-	////material
-	//if (bUseMaterial) {
-	//	//ofEnableLighting();
-	//	//ofEnableDepthTest();
-	//	ofSetSmoothLighting(true);
-	//	light.setup();
-	//	light.enable();
-	//	light.setSpotlight();
-	//	light.setSpotlightCutOff(50);
-	//	//light.setPosition(0, 100, 100);
-
-	//	material.setDiffuseColor(ofColor::red);
-	//	material.setAmbientColor(ofColor::red);
-	//	material.setSpecularColor(ofColor::white);
-	//	material.setShininess(128);
-	//}
 }
 
 //--------------------------------------------------------------
@@ -109,18 +80,18 @@ void ofApp::drawScene() {
 	draw3D();
 }
 
-//webcam
+// webcam
 //--------------------------------------------------------------
 void ofApp::setupWebcamDevice() {
 
-	//load settings
+	// load settings
 	ofXml _xml;
 	bool _isLoaded;
 	_isLoaded = _xml.load("settings.xml");
 	ofDeserialize(_xml, _dName);
 	ofLogNotice(__FUNCTION__) << _xml.toString();
 
-	//start
+	// start
 	auto _devs = vidGrabber.listDevices();
 	_d = -1;
 	if (_isLoaded) {
@@ -137,27 +108,30 @@ void ofApp::setupWebcamDevice() {
 		_dName = _devs[_d].deviceName;
 	}
 
-	//start device
+	// start device
 	vidGrabber.setVerbose(true);
 	vidGrabber.setDeviceID(_d);
 	vidGrabber.setup(1920, 1080);
 }
 //--------------------------------------------------------------
-void ofApp::drawWebcamInfo() {
-	//display device name
+void ofApp::drawWebcamInfo()
+{
+	// display device name
 	string str;
 	str += "[" + ofToString(_d) + "] " + _dName.get();
 	str += " " + ofToString(vidGrabber.isInitialized() ? "ON" : "OFF");
-	str += "\ni: select next device";
-	str += "\nI: restart device";
-	
+	str += "\n D: NEXT DEVICE";
+	str += "\n R: RESTART DEVICE";
+	str += "\n P: NEXT PRIM";
+
 	int xx = 30;
 	int yy = 40;
 
 	if (!font.isLoaded()) ofDrawBitmapStringHighlight(str, xx, yy);
 	else {
 		ofPushStyle();
-		//bbox
+
+		// bbox
 		ofSetColor(0, 150);
 		ofFill();
 		ofRectangle _r(font.getStringBoundingBox(str, xx, yy));
@@ -168,10 +142,12 @@ void ofApp::drawWebcamInfo() {
 		_r.setY(_r.getPosition().y - pad / 2.);
 		//_r.scaleFromCenter(1.05, 1.5);
 		ofDrawRectRounded(_r, 5.);
-		//text
+
+		// text
 		ofSetColor(255);
 		ofNoFill();
 		font.drawString(str, xx, yy);
+
 		ofPopStyle();
 	}
 }
@@ -206,22 +182,6 @@ void ofApp::draw3D() {
 
 		//-
 
-		//if (bUseMaterial) {
-		//	//ofEnableDepthTest();
-
-		//	ofEnableLighting();
-		//	//light.setPosition(cam.getPosition().x, cam.getPosition().y, cam.getPosition().z);
-		//	light.setPosition(-200, 200, 200);
-		//	light.enable();
-
-		//	//material.begin();
-		//}
-		//else {
-		//	//ofDisableDepthTest();
-		//}
-
-		//-
-
 		//prims
 		ofFill();
 		ofSetColor(0, 64);
@@ -236,18 +196,7 @@ void ofApp::draw3D() {
 
 		//-
 
-		//if (bUseMaterial) {
-		//	//material.end();
-
-		//	light.disable();
-		//	ofDisableLighting();
-
-		//	//ofDisableDepthTest();
-		//}
-
-		//-
-
-		//wire prims
+		// wire prims
 		ofNoFill();
 		ofSetColor(255, 200);
 		//ofSetColor(0, 200);
@@ -272,42 +221,31 @@ void ofApp::draw3D() {
 void ofApp::exit()
 {
 	exitWebcam();
-
-	//ofxSurfingFxChannel
-	//channelFx.exit();
-
-#ifdef USE_ofxWindowApp
-	windowApp.exit();
-#endif
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
 
-	//ofxSurfingFxChannel
-	channelFx.keyPressed(key);
-
-	//-
-
-	if (key == ' ') {
+	if (key == 'p' || key == 'P') {
 		_prim++; if (_prim == 2) _prim = 0;
 	}
 
-	//webcam
-	if (key == 'i') {
-		//webcam
+	// webcam
+
+	// select cam device
+	if (key == 'd' || key == 'D') {
 		auto _devs = vidGrabber.listDevices();
 		_d++;
 		if (_d > _devs.size() - 1) _d = 0;
 		_dName = _devs[_d].deviceName;
 
-		//select cam device
 		vidGrabber.close();
 		vidGrabber.setDeviceID(_d);
 		vidGrabber.setup(1920, 1080);
 	}
-	if (key == 'I') {
-		//restart device
+
+	// restart device
+	if (key == 'r' || key == 'R') {
 		//if (vidGrabber.isInitialized()) {
 		//	vidGrabber.close();
 		//}
