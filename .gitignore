@@ -5,6 +5,8 @@
 ##-------------------------------
 
 ## can exclude some sttings files
+*.ps1
+*.bat
 
 *.XML
 *.xml
