@@ -7,7 +7,7 @@ ofxSurfingFxChannel
 
 **ofxSurfingFxChannel** is an **openFrameworks** add-on to live image processing with common effects:  
 
-HSB, Contrast, Brightness, Saturation, Hue, Monochrome, Tree Tones Colors, and Delays.
+Monochrome, HSB, Contrast, Hue, Saturation, Brightness, Tree Tones Colors, Delay and Echo Trace.
 
 Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](https://github.com/npisanti).
 
@@ -16,12 +16,12 @@ Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](
 ![image](/readme_images/Capture3.PNG?raw=true "image")
 
 ## Features
-- Channel Strip to do image processing with common useful effects.
+- Channel Strip to image processing with common useful effects.
 - Monochrome, Three Tones, Hue/Saturation/Brightness/Contrast, Delay, and Echo Trace effects.
-- Powered by the shaders of [ofxDotFrag](https://github.com/npisanti/ofxDotFrag).
-- Store/Recall settings.
-- Optional Presents Manager.
-- Implemented GUI's workflow for **ofxImGui** or **ofxGui**.
+- Powered by the Shaders of [ofxDotFrag](https://github.com/npisanti/ofxDotFrag).
+- Auto Store/Recall Settings.
+- Optional Presets Manager.
+- Implemented GUI with **ofxImGui** or **ofxGui**.
 
 ## Usage
 Check examples.  
@@ -83,7 +83,7 @@ Optional:
 
 ## Author
 An addon by **@moebiusSurfing**  
-*( ManuMolina ) 2019-2021*  
+*( ManuMolina ) 2019-2022*  
 
 ### Contact / Follow
 <p>
