@@ -6,30 +6,41 @@
 
 #include "ofMain.h"
 
-//----
+//---
+
+//	TODO:
+//	
+//	fix groups gui workflow expand/collapse
+//	add one extra fx: gpu lut?
+//	reduce callbacks?
+
+//---
+
 
 // Optional:
 
 #define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // new gui
 //#define USE_ofxGui // simpler gui could be activated with small modifications to remove ImGui dependency (TODO)
 
-// To include some extra fx's: delay and echotrace
+// To include some extra fx's: 
+// delay and echotrace
 #define USE_FX_DELAYS	
 
-// To enable ofxPresetsManager. (must add the addon to the project)
-#define USE_ofxSurfingPresets // 1. presets manager (simpler and recommended)
-//#define USE_ofxPresetsManager // 2. complex alterntive	
+//-
+
+// Enable a Presets Manager:
+
+// Option 1. 
+// Simpler and recommended!
+#define USE_ofxSurfingPresets 
+
+// Option 2. 
+// A bit complex alternative.	
+//#define USE_ofxPresetsManager
 
 
+//----
 
-//---
-
-//	TODO:
-//	
-//	add one extra fx: gpu lut?
-//	reduce callbacks?
-
-//---
 
 #include "ofxSurfingHelpers.h"
 
@@ -41,7 +52,7 @@
 #include "ofxSurfingImGui.h"
 #endif
 
-// Gui
+// Gui //-> To disable all ImGui and enable ofxGui maybe you need to do some work...
 #ifdef USE_ofxGui
 #include "ofxGui.h"
 #include "ofxSurfing_ofxGui.h"
@@ -67,9 +78,19 @@
 
 class ofxSurfingFxChannel
 {
+
+public:
+	void setup();
+	void draw();
+	void exit();
+	void windowResized(int w, int h);
+
+	void drawGui();
+
 	//--
 
 public:
+
 	//--------------------------------------------------------------
 	ofxSurfingFxChannel() {
 		// settings folder
@@ -82,7 +103,7 @@ public:
 		path_fileName_Preset = "ofxSurfingFxChannel_Preset.xml"; // not used when using presetsManager
 #endif
 
-		ENABLE_FxChain.set("ENABLE", true);
+		bENABLE_Fx.set("ENABLE", true);
 
 		vflip = false;
 
@@ -116,17 +137,9 @@ private:
 
 	//--
 
-public:
-	void setup();
-	void draw();
-	void exit();
-	void windowResized(int w, int h);
+private:
 
 	ofParameter<int> window_W, window_H, window_X, window_Y;
-
-	void drawGui();
-
-private:
 
 	void fboAllocate();
 
@@ -134,6 +147,7 @@ private:
 
 	//--
 
+#ifdef USE_ofxGui
 private:
 	// main parameters. usualy to use outside the class as: control & preset
 	ofParameterGroup parameters;
@@ -142,6 +156,9 @@ public:
 	ofParameterGroup getParameters() {// control & preset
 		return parameters;
 	}
+#endif
+
+public:
 	//--------------------------------------------------------------
 	ofParameterGroup getParameters_Preset() {// to use as preset
 		return params_Preset;
@@ -151,7 +168,8 @@ public:
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 private:
-	ofxSurfing_ImGui_Manager guiManager; // In MODE A ofxGui will be instatiated inside the class
+	ofxSurfing_ImGui_Manager guiManager;
+
 	void drawImGui();
 
 	ImGuiTreeNodeFlags fg0;
@@ -175,7 +193,7 @@ private:
 
 	//--
 
-	// gui workflow
+	// Gui workflow
 	void refresh_Gui();
 	void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
 	void refresh_Gui_minimize(bool bUseSolo = false);
@@ -198,26 +216,30 @@ public:
 	void begin();
 	void end();
 
-	ofParameter<bool> ENABLE_FxChain; // main enabler toggle
-
-	ofParameter<bool> bGui{ "SHOW GUI", true };
+	ofParameter<bool> bENABLE_Fx; // main enabler/bypass toggle
+	ofParameter<bool> bGui{ "SHOW GUI", true }; // all gui
 
 private:
-	ofParameter<int> SELECT_Fx{ "SELECT FX", 1, 1, 3 };//select the fx to edit/show gui panel
-	ofParameter<std::string> SELECT_Fx_Name{ "FX","" };//fx name
+	ofParameter<int> SELECT_Fx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
+	ofParameter<std::string> SELECT_Fx_Name{ "_FX_","" };//fx name
+
 	ofParameter<bool> bSolo{ "Solo", false };//mute the other fx
 	ofParameter<bool> bReset{ "Reset", false };//reset selected fx
 	ofParameter<bool> bAll{ "All", false };
 	ofParameter<bool> bNone{ "None", false };
 	ofParameter<bool> bKeys{ "Keys", true };
-	ofParameter<bool> bCollapse{ "Collapse", false };
-	ofParameter<bool> bExpand{ "Expand", false };
+	ofParameter<bool> bSettings{ "Fx Settings", false };
 
 #ifdef USE_ofxPresetsManager
 	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };
 #endif
-	
+
+	ofParameter<bool> bCollapse{ "Collapse", false };
+	ofParameter<bool> bExpand{ "Expand", false };
+
 	bool bEnableGuiWorkflow = true;
+
+	//--
 
 	ofParameter<bool> ENABLE_Monochrome;
 	ofParameter<bool> ENABLE_ThreeTones;
@@ -229,6 +251,7 @@ private:
 
 	ofParameterGroup params_Session;
 	ofParameterGroup params_Subcontrol;
+	ofParameterGroup params_Subcontrol2;
 	ofParameterGroup params_Editor;
 	ofParameterGroup params_Preset;
 	ofParameterGroup params_Control;
@@ -250,29 +273,32 @@ public:
 
 	//--
 
-	// dot fx shaders
+	// Dot Fx shaders
 
 private:
 
-	// basic fx
+	// Basic Fx
 	ofx::dotfrag::Monochrome frag1;
 	ofx::dotfrag::ThreeTones frag2;
 	ofx::dotfrag::HSB frag3;
 
-	// fx extra
+	// Fx Extra
 #ifdef USE_FX_DELAYS
 	ofx::dotfrag::Delay frag4;
 	ofx::dotfrag::EchoTrace frag5;
 	//ofx::dotfrag::Twist frag6;
 #endif
 
+	//--
+
 public:
+
+#ifndef USE_ofxPresetsManager
 	//--------------------------------------------------------------
 	void loadSettings() {
-#ifndef USE_ofxPresetsManager
 		ofxSurfingHelpers::loadGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
-#endif
 	}
+#endif
 
 	//--
 
@@ -282,11 +308,17 @@ public:
 
 	//--
 
-	// presetsManager
+	// Presets Manager
+
+	// Option 1
 
 #ifdef USE_ofxSurfingPresets
 	ofxSurfingPresets presetsManager;
 #endif
+
+	//-
+
+	// Option 2
 
 #ifdef USE_ofxPresetsManager
 public:
@@ -298,7 +330,8 @@ private:
 
 	//--
 
-	// settings
+	// Path settings
+
 private:
 	std::string path_GLOBAL_Folder;
 	std::string path_fileName_Session;
@@ -351,7 +384,7 @@ public:
 		return _gwidth;
 	}
 #endif
-	
+
 	//--------------------------------------------------------------
 	void setVisibleGui(bool b) {
 		bGui = b;
@@ -379,11 +412,13 @@ public:
 		bReset = true;
 	}
 
+#ifdef USE_ofxPresetsManager
 	ofParameterGroup params_ControlExternal;
 	//--------------------------------------------------------------
 	ofParameterGroup getParamGroup_Control() {
 		return params_ControlExternal;
 	}
+#endif
 
 	//-
 
@@ -392,4 +427,4 @@ public:
 	void setEnableKeys(bool b) {
 		bKeys = b;
 	}
-	};
+};

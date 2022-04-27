@@ -551,3 +551,4 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 examples/1_BasicNoPresets/bin/imgui.ini
+examples/2_BasicPresets/bin/imgui.ini
