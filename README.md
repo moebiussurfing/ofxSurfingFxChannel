@@ -61,15 +61,15 @@ ofApp::draw()
 
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [_Fork_]  
-
-The below add-ons are already packed into **OF_ADDON/libs/**.  
-No need to add them manually with the **OF PROJECT GENERATOR**:    
-* [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) 
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [ _Fork_ ]  
 
 Optional:  
 * [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  
 * ofxGui [_Core_]  
+
+The below add-on are already packed into **OF_ADDON/libs/**.  
+No need to add them manually with the **OF PROJECT GENERATOR**:    
+* [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) 
   </p>
 </details>
 
