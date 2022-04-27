@@ -16,7 +16,7 @@ Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](
 ![image](/readme_images/Capture3.PNG?raw=true "image")
 
 ## Features
-- Channel Strip to image processing with common useful effects.
+- Channel Strip to image processing with common useful Effects.
 - Monochrome, Three Tones, Hue/Saturation/Brightness/Contrast, Delay, and Echo Trace effects.
 - Powered by the Shaders of [ofxDotFrag](https://github.com/npisanti/ofxDotFrag).
 - Auto Store/Recall Settings.
@@ -59,13 +59,13 @@ ofApp::draw()
   <summary>Dependencies</summary>
   <p>
 
-* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxSurfingImGui](https://github.com/moebiussurfing/ofxSurfingImGui)  
-* [ofxImGui](https://github.com/Daandelange/ofxImGui/) [ _Fork_ ]  
+* [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
+* [ofxImGui](https://github.com/Daandelange/ofxImGui/)  [ _FORK from_ @**Daandelange** ]  
 
 Optional:  
-* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  
-* ofxGui [_Core_]  
+* [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  [ _Optional_ ]  
+* ofxGui [ _Core Optional_ ]  
 
 The below add-on are already packed into **OF_ADDON/libs/**.  
 No need to add them manually with the **OF PROJECT GENERATOR**:    
