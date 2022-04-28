@@ -92,7 +92,8 @@ public:
 public:
 
 	//--------------------------------------------------------------
-	ofxSurfingFxChannel() {
+	ofxSurfingFxChannel() 
+	{
 		// settings folder
 		path_GLOBAL_Folder = "ofxSurfingFxChannel";
 
@@ -295,7 +296,8 @@ public:
 
 #ifndef USE_ofxPresetsManager
 	//--------------------------------------------------------------
-	void loadSettings() {
+	void loadSettings()
+	{
 		ofxSurfingHelpers::loadGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
 	}
 #endif
@@ -333,6 +335,7 @@ private:
 	// Path settings
 
 private:
+
 	std::string path_GLOBAL_Folder;
 	std::string path_fileName_Session;
 

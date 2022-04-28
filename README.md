@@ -7,7 +7,7 @@ ofxSurfingFxChannel
 
 **ofxSurfingFxChannel** is an **openFrameworks** add-on to live image processing with common effects:  
 
-Monochrome, HSB, Contrast, Hue, Saturation, Brightness, Tree Tones Colors, Delay and Echo Trace.
+Monochrome, HSB, Hue, Saturation, Brightness, Contrast, Tree Tones Colors, Delay and Echo Trace.
 
 Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](https://github.com/npisanti).
 
@@ -16,9 +16,7 @@ Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](
 ![image](/readme_images/Capture3.PNG?raw=true "image")
 
 ## Features
-- Channel Strip to image processing with common useful Effects.
-- Monochrome, Three Tones, Hue/Saturation/Brightness/Contrast, Delay, and Echo Trace effects.
-- Powered by the Shaders of [ofxDotFrag](https://github.com/npisanti/ofxDotFrag).
+- Channel Strip to image processing with common Effects.
 - Auto Store/Recall Settings.
 - Optional Presets Manager.
 - Implemented GUI with **ofxImGui** or **ofxGui**.
@@ -63,11 +61,11 @@ ofApp::draw()
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/)  [ _FORK from_ @**Daandelange** ]  
 
-Optional:  
+OPTIONAL:  
 * [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  [ _Optional_ ]  
 * ofxGui [ _Core Optional_ ]  
 
-The below add-on are already packed into **OF_ADDON/libs/**.  
+The below add-ons are already packed into **OF_ADDON/libs/**.  
 No need to add them manually with the **OF PROJECT GENERATOR**:    
 * [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) 
   </p>

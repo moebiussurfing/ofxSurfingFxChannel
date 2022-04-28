@@ -108,6 +108,9 @@ void ofxSurfingFxChannel::startup()
 	// Presets Manager
 
 #ifdef USE_ofxSurfingPresets
+
+	presetsManager.setPathPresets(path_GLOBAL_Folder + "/" + "Presets");
+
 	// Reduce default amount of presets
 	presetsManager.setMaxPresetsAmount(4);
 
@@ -115,7 +118,7 @@ void ofxSurfingFxChannel::startup()
 	presetsManager.addGroup(params_Preset);
 
 	// some preferences for this situation: being minimal
-	presetsManager.bGui.setName("Presets");
+	presetsManager.bGui.setName("Fx Presets");
 	presetsManager.bGui = true;
 	presetsManager.bGui_Editor = false;
 	presetsManager.bGui_Parameters = false;
