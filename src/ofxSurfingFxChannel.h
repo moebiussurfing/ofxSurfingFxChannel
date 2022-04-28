@@ -398,14 +398,6 @@ public:
 #endif
 	}
 
-#ifdef USE_ofxPresetsManager
-	//--------------------------------------------------------------
-	void setVisible_PresetClicker(bool b)
-	{
-		presetsManager.setVisible_PresetClicker(b);
-	}
-#endif
-
 	//--------------------------------------------------------------
 	void setKeysEnable(bool b) {
 		bKeys = b;
@@ -415,19 +407,33 @@ public:
 		bReset = true;
 	}
 
+
+	//-
+
+	//--------------------------------------------------------------
+	void setEnableKeys(bool b) {
+		bKeys = b;
+	}
+
+	//--------------------------------------------------------------
+	void setKeysExtra(bool b) {
+#ifdef USE_ofxSurfingPresets
+		presetsManager.setEnableKeySpace(b); // enable space key bc used maybe by a play toggle
+		presetsManager.setEnableKeysArrows(b); // enable arrows browse keys
+#endif
+	}
+
 #ifdef USE_ofxPresetsManager
+	//--------------------------------------------------------------
+	void setVisible_PresetClicker(bool b)
+	{
+		presetsManager.setVisible_PresetClicker(b);
+	}
+	
 	ofParameterGroup params_ControlExternal;
 	//--------------------------------------------------------------
 	ofParameterGroup getParamGroup_Control() {
 		return params_ControlExternal;
 	}
 #endif
-
-	//-
-
-public:
-	//--------------------------------------------------------------
-	void setEnableKeys(bool b) {
-		bKeys = b;
-	}
 };

@@ -61,7 +61,7 @@ ofApp::draw()
 * [ofxSurfingHelpers](https://github.com/moebiussurfing/ofxSurfingHelpers)  
 * [ofxImGui](https://github.com/Daandelange/ofxImGui/)  [ _FORK from_ @**Daandelange** ]  
 
-OPTIONAL:  
+#### OPTIONAL:  
 * [ofxSurfingPresets](https://github.com/moebiussurfing/ofxSurfingPresets)  [ _Optional_ ]  
 * ofxGui [ _Core Optional_ ]  
 

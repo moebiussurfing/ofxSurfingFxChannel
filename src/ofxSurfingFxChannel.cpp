@@ -58,7 +58,7 @@ void ofxSurfingFxChannel::setup()
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 
-	guiManager.setup(); 
+	guiManager.setup();
 
 	//TODO:
 	// Gui Workflow
@@ -107,6 +107,8 @@ void ofxSurfingFxChannel::startup()
 
 	// Presets Manager
 
+	// handles fx presets! (with all the settings)
+
 #ifdef USE_ofxSurfingPresets
 
 	presetsManager.setPathPresets(path_GLOBAL_Folder + "/" + "Presets");
@@ -125,6 +127,8 @@ void ofxSurfingFxChannel::startup()
 	presetsManager.bGui_FloatingClicker = false;
 	presetsManager.bGui_InnerClicker = true;
 	presetsManager.bMinimize_Clicker = true;
+	
+	presetsManager.bKeys.makeReferenceTo(bKeys);//link toggles
 #endif
 
 #ifdef USE_ofxPresetsManager
@@ -166,7 +170,7 @@ void ofxSurfingFxChannel::startup()
 ////--------------------------------------------------------------
 //void ofxSurfingFxChannel::setActive(bool b)
 //{
-//	ENABLE_Active = b;
+//	bActive = b;
 //	setGuiVisible(b);
 //	setKeysEnable(b);
 //}
@@ -226,6 +230,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	// exclude
 	SELECT_Fx_Name.setSerializable(false);
+	bSolo.setSerializable(false);
 	bReset.setSerializable(false);
 	bAll.setSerializable(false);
 	bNone.setSerializable(false);
@@ -483,6 +488,8 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 		else if (name == guiManager.bMinimize.getName())
 		{
 			setupStyles();
+
+			if (bSolo) bSolo = false;
 		}
 
 		// solo
@@ -680,7 +687,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 
 				// reset all fx
 				{
-					bSolo = false;
+					if (bSolo.get()) bSolo = false;
 
 					frag1.active = false;
 					frag1.low = 0;
@@ -856,7 +863,7 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 		else if (name == bGui_Presets.getName())
 		{
 			presetsManager.setVisible_PresetClicker(bGui_Presets);
-	}
+		}
 #endif
 		//--
 
@@ -865,9 +872,9 @@ void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
 		else if (name == bKeys.getName())
 		{
 #ifdef USE_ofxPresetsManager
-			presetsManager.setEnableKeys(ENABLE_Keys_Player);
+			presetsManager.setEnableKeys(bKeys);
 #endif
-}
+		}
 
 		//--
 	}
@@ -995,7 +1002,7 @@ void ofxSurfingFxChannel::drawGui()
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 		drawImGui();
 #endif
-}
+	}
 }
 
 //--------------------------------------------------------------
@@ -1071,8 +1078,7 @@ void ofxSurfingFxChannel::drawImGui()
 
 				// Controls
 
-				if (!guiManager.bMinimize)
-					guiManager.AddGroup(params_Subcontrol);
+				if (!guiManager.bMinimize) guiManager.AddGroup(params_Subcontrol, ImGuiTreeNodeFlags_None);
 
 				guiManager.AddGroup(params_Subcontrol2);
 
@@ -1082,11 +1088,11 @@ void ofxSurfingFxChannel::drawImGui()
 					AddSpacingSeparated();
 					guiManager.Add(bGui_Presets, OFX_IM_TOGGLE_BIG);
 					ImGui::Spacing();
-			}
+				}
 #endif
-		}
+			}
 			guiManager.endWindow();
-	}
+		}
 
 		//--
 
@@ -1119,7 +1125,7 @@ void ofxSurfingFxChannel::drawImGui()
 					guiManager.endWindow();
 				}
 			}
-}
+	}
 	guiManager.end(); // global end
 
 	//--
