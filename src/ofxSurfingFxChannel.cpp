@@ -909,12 +909,14 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 
 	if (bKeys)
 	{
-		if (key == OF_KEY_UP) {
+		// Browse Fx selector
+		if (key == OF_KEY_UP)
+		{
 			if (SELECT_Fx.get() > 0) SELECT_Fx--;
 		}
 
-		else if (key == OF_KEY_DOWN) {
-
+		else if (key == OF_KEY_DOWN) 
+		{
 #ifndef USE_FX_DELAYS
 			if (SELECT_Fx.get() < 3) SELECT_Fx++;
 #else
@@ -926,19 +928,19 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 			doReset();
 		}
 
-		else if (key == 's') {
+		else if (key == 'S') {
 			bSolo = !bSolo;
 		}
 
-		else if (key == 'a') {
+		else if (key == 'A') {
 			bAll = !bAll;
 		}
 
-		else if (key == 'n') {
+		else if (key == 'N') {
 			bNone = !bNone;
 		}
 
-		else if (key == 'e') {
+		else if (key == 'E') {
 			bENABLE_Fx = !bENABLE_Fx;
 		}
 	}
@@ -1036,14 +1038,15 @@ void ofxSurfingFxChannel::drawImGui()
 			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 			if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-			guiManager.beginWindow("Fx Channel", &bOpen1, window_flags);
+			guiManager.beginWindow("FX CHANNEL", &bOpen1, window_flags);
 			{
 				// Global Enable
 				guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
 				ImGui::Spacing();
 
-				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 				guiManager.Add(bSettings, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+
+				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 
 				if (!guiManager.bMinimize)
 				{
@@ -1112,7 +1115,7 @@ void ofxSurfingFxChannel::drawImGui()
 					ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
 					if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
 
-					guiManager.beginWindow("Fx Settings", &(bool)bSettings.get(), window_flags);
+					guiManager.beginWindow("FX SETTINGS", &(bool)bSettings.get(), window_flags);
 					{
 						if (frag1.active) guiManager.AddGroup(frag1.parameters, fg1, OFX_IM_GROUP_DEFAULT);
 						if (frag2.active) guiManager.AddGroup(frag2.parameters, fg2, OFX_IM_GROUP_DEFAULT);

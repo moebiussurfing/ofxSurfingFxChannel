@@ -229,7 +229,7 @@ private:
 	ofParameter<bool> bAll{ "All", false };
 	ofParameter<bool> bNone{ "None", false };
 	ofParameter<bool> bKeys{ "Keys", true };
-	ofParameter<bool> bSettings{ "Fx Settings", false };
+	ofParameter<bool> bSettings{ "FX SETTINGS", false };
 
 #ifdef USE_ofxPresetsManager
 	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };
