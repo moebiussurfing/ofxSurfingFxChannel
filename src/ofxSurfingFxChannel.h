@@ -92,7 +92,7 @@ public:
 public:
 
 	//--------------------------------------------------------------
-	ofxSurfingFxChannel() 
+	ofxSurfingFxChannel()
 	{
 		// settings folder
 		path_GLOBAL_Folder = "ofxSurfingFxChannel";
@@ -173,14 +173,6 @@ private:
 
 	void drawImGui();
 
-	ImGuiTreeNodeFlags fg0;
-	ImGuiTreeNodeFlags fg1;
-	ImGuiTreeNodeFlags fg2;
-	ImGuiTreeNodeFlags fg3;
-	ImGuiTreeNodeFlags fg4;
-	ImGuiTreeNodeFlags fg5;
-	ImGuiTreeNodeFlags fg6;
-
 	// Styles
 	void setupStyles();
 	void ClearStyles();
@@ -195,19 +187,50 @@ private:
 	//--
 
 	// Gui workflow
-	void refresh_Gui();
-	void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
-	void refresh_Gui_minimize(bool bUseSolo = false);
+	
+	//void refresh_Gui();
+	//void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
+	//void refresh_Gui_minimize(bool bUseSolo = false);
 	void refresh_Gui_Solos();
 
+	//-
+
+	//TODO:
+	// trig to implement workflow collapse / expand groups not working...
+	/*
+
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+	
 	bool bOpenFrag1 = false;
 	bool bOpenFrag2 = false;
 	bool bOpenFrag3 = false;
+#ifdef USE_FX_DELAYS
 	bool bOpenFrag4 = false;
 	bool bOpenFrag5 = false;
-	//bool bOpenFrag6 = false;
 #endif
+
+	ImGuiTreeNodeFlags fg0;
+
+	ImGuiTreeNodeFlags fg1;
+	ImGuiTreeNodeFlags fg2;
+	ImGuiTreeNodeFlags fg3;
+	ImGuiTreeNodeFlags fg4;
+#ifdef USE_FX_DELAYS
+	ImGuiTreeNodeFlags fg5;
+	ImGuiTreeNodeFlags fg6;
+#endif
+
+	SurfingImGuiTypesGroups fgg1;
+	SurfingImGuiTypesGroups fgg2;
+	SurfingImGuiTypesGroups fgg3;
+#ifdef USE_FX_DELAYS
+	SurfingImGuiTypesGroups fgg4;
+	SurfingImGuiTypesGroups fgg5;
+#endif
+
+#endif
+	
+	*/
 
 	//--
 
@@ -235,8 +258,8 @@ private:
 	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };
 #endif
 
-	ofParameter<bool> bCollapse{ "Collapse", false };
-	ofParameter<bool> bExpand{ "Expand", false };
+	//ofParameter<bool> bCollapse{ "Collapse", false };
+	//ofParameter<bool> bExpand{ "Expand", false };
 
 	bool bEnableGuiWorkflow = true;
 
@@ -429,11 +452,11 @@ public:
 	{
 		presetsManager.setVisible_PresetClicker(b);
 	}
-	
+
 	ofParameterGroup params_ControlExternal;
 	//--------------------------------------------------------------
 	ofParameterGroup getParamGroup_Control() {
 		return params_ControlExternal;
 	}
 #endif
-};
+	};
