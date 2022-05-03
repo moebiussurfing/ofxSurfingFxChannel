@@ -187,50 +187,55 @@ private:
 	//--
 
 	// Gui workflow
-	
-	//void refresh_Gui();
-	//void refresh_ofxGuiExtended_Check();//check if no fx enabled, then collapse all gui panels
-	//void refresh_Gui_minimize(bool bUseSolo = false);
+
 	void refresh_Gui_Solos();
 
 	//-
 
 	//TODO:
 	// trig to implement workflow collapse / expand groups not working...
-	/*
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	
-	bool bOpenFrag1 = false;
-	bool bOpenFrag2 = false;
-	bool bOpenFrag3 = false;
+
+//	bool bOpenFrag1 = false;
+//	bool bOpenFrag2 = false;
+//	bool bOpenFrag3 = false;
+//#ifdef USE_FX_DELAYS
+//	bool bOpenFrag4 = false;
+//	bool bOpenFrag5 = false;
+//#endif
+
+	//ImGuiTreeNodeFlags fg0;
+
+	ImGuiTreeNodeFlags fgT1;
+	ImGuiTreeNodeFlags fgT2;
+	ImGuiTreeNodeFlags fgT3;
+	ImGuiTreeNodeFlags fgT4;
 #ifdef USE_FX_DELAYS
-	bool bOpenFrag4 = false;
-	bool bOpenFrag5 = false;
+	ImGuiTreeNodeFlags fgT5;
+	ImGuiTreeNodeFlags fgT6;
 #endif
 
-	ImGuiTreeNodeFlags fg0;
-
-	ImGuiTreeNodeFlags fg1;
-	ImGuiTreeNodeFlags fg2;
-	ImGuiTreeNodeFlags fg3;
-	ImGuiTreeNodeFlags fg4;
+	SurfingImGuiTypesGroups fgG1;
+	SurfingImGuiTypesGroups fgG2;
+	SurfingImGuiTypesGroups fgG3;
 #ifdef USE_FX_DELAYS
-	ImGuiTreeNodeFlags fg5;
-	ImGuiTreeNodeFlags fg6;
+	SurfingImGuiTypesGroups fgG4;
+	SurfingImGuiTypesGroups fgG5;
 #endif
 
-	SurfingImGuiTypesGroups fgg1;
-	SurfingImGuiTypesGroups fgg2;
-	SurfingImGuiTypesGroups fgg3;
+#endif
+
+	//--
+
+	ofParameter<bool> bActive1_PRE{ "bActive1_PRE", false };
+	ofParameter<bool> bActive2_PRE{ "bActive2_PRE", false };
+	ofParameter<bool> bActive3_PRE{ "bActive3_PRE", false };
 #ifdef USE_FX_DELAYS
-	SurfingImGuiTypesGroups fgg4;
-	SurfingImGuiTypesGroups fgg5;
+	ofParameter<bool> bActive4_PRE{ "bActive4_PRE", false };
+	ofParameter<bool> bActive5_PRE{ "bActive5_PRE", false };
 #endif
-
-#endif
-	
-	*/
+	bool bSoloed = false;
 
 	//--
 
@@ -241,7 +246,7 @@ public:
 	void end();
 
 	ofParameter<bool> bENABLE_Fx; // main enabler/bypass toggle
-	ofParameter<bool> bGui{ "SHOW GUI", true }; // all gui
+	ofParameter<bool> bGui{ "Show Gui", true }; // all gui
 
 private:
 	ofParameter<int> SELECT_Fx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
