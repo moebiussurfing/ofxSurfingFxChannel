@@ -53,7 +53,7 @@ public:
 	// Webcam
 	ofVideoGrabber vidGrabber;
 	void setupWebcamDevice();
-	void drawWebcamInfo();
+	void drawInfo();
 	void exitWebcam();
 	void drawWebcam();
 	ofParameter <std::string> deviceName{ "WEBCAM_DEVICE_NAME", "" };

@@ -39,7 +39,7 @@ void ofApp::draw() {
 
 	//--
 
-	drawWebcamInfo();
+	drawInfo();
 }
 
 //--------------------------------------------------------------
@@ -226,7 +226,7 @@ void ofApp::setupWebcamDevice() {
 	vidGrabber.setup(1920, 1080);
 }
 //--------------------------------------------------------------
-void ofApp::drawWebcamInfo()
+void ofApp::drawInfo()
 {
 	// display device name
 	string str;
