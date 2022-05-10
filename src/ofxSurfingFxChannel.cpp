@@ -110,23 +110,28 @@ void ofxSurfingFxChannel::startup()
 	// handles fx presets! (with all the settings)
 
 #ifdef USE_ofxSurfingPresets
-
 	presetsManager.setPathPresets(path_GLOBAL_Folder + "/" + "Presets");
 
 	// Reduce default amount of presets
 	presetsManager.setMaxPresetsAmount(4);
 
+	//presetsManager.setName("myPlayer");
+
 	// add params
 	presetsManager.addGroup(params_Preset);
 
 	// some preferences for this situation: being minimal
+	presetsManager.bGui_Global.setName("PRESETS");
 	presetsManager.bGui.setName("Fx Presets");
 	presetsManager.bGui = true;
 	presetsManager.bGui_Editor = false;
 	presetsManager.bGui_Parameters = false;
-	presetsManager.bGui_FloatingClicker = false;
-	presetsManager.bGui_InnerClicker = true;
+	presetsManager.bGui_ClickerFloating = false;
+	presetsManager.bGui_ClickerSimple = true;
 	presetsManager.bMinimize_Clicker = true;
+	presetsManager.setPlayerPlay(false);
+	presetsManager.setMaxPresetsAmountPerRowClickerFloat(2);
+	presetsManager.setMaxPresetsAmountPerRowClickerMini(2);
 
 	presetsManager.bKeys.makeReferenceTo(bKeys);//link toggles
 #endif
@@ -1056,7 +1061,9 @@ void ofxSurfingFxChannel::drawImGui()
 			guiManager.beginWindow("FX CHANNEL", &bOpen1, window_flags);
 			{
 				// Global Enable
+
 				guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
+
 				ImGui::Spacing();
 
 				guiManager.Add(bSettings, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
@@ -1084,12 +1091,18 @@ void ofxSurfingFxChannel::drawImGui()
 #ifdef USE_ofxSurfingPresets
 				if (!guiManager.bMinimize)
 				{
-					ImGui::Spacing();
+					ofxImGuiSurfing::AddSpacingSeparated();
 
-					presetsManager.draw_ImGui_MiniClicker();
+					guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+					if (presetsManager.bGui_Global) 
+					{
+						guiManager.Indent();
+						guiManager.Add(presetsManager.bGui_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+						presetsManager.draw_ImGui_ClickerSimple(false, false);
+						guiManager.Unindent();
+					}
 
-					guiManager.refreshLayout();
-					//ofxImGuiSurfing::AddSpacingSeparated();
+					ofxImGuiSurfing::AddSpacingSeparated();
 				}
 #endif
 				//--

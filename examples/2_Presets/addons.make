@@ -2,5 +2,6 @@ ofxImGui
 ofxSurfingFxChannel
 ofxSurfingHelpers
 ofxSurfingImGui
+ofxSurfingPlayer
 ofxSurfingPresets
 ofxWindowApp
