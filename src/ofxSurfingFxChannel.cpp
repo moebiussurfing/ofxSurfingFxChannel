@@ -1155,49 +1155,51 @@ void ofxSurfingFxChannel::drawImGui()
 				guiManager.beginWindow("FX SETTINGS", &(bool)bSettings.get(), window_flags);
 				{
 					//TODO:
-					//fold expand/coallapse
+					//fold expand/collapse
 					//https://github.com/ocornut/imgui/issues/1131
 
-//					fgG1 = (frag1.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-//					fgG2 = (frag2.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-//					fgG3 = (frag3.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-//#ifdef USE_FX_DELAYS
-//					fgG4 = (frag4.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-//					fgG5 = (frag5.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-//#endif
 
-//					fgT1 = frag1.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-//					fgT2 = frag2.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-//					fgT3 = frag3.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-//#ifdef USE_FX_DELAYS
-//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-//#endif
-
-					guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
 					if (!guiManager.bMinimize && frag1.active)
 						guiManager.AddGroup(frag1.parameters, fgT1, fgG1);
+					guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
 					ofxImGuiSurfing::AddSpacingSeparated();
 
-					guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
 					if (!guiManager.bMinimize && frag2.active)
 						guiManager.AddGroup(frag2.parameters, fgT2, fgG2);
+					guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
 					ofxImGuiSurfing::AddSpacingSeparated();
 
-					guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
 					if (!guiManager.bMinimize && frag3.active)
 						guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
+					guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
 					ofxImGuiSurfing::AddSpacingSeparated();
 #ifdef USE_FX_DELAYS	
-					guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
 					if (!guiManager.bMinimize && frag4.active)
 						guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
+					guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
 					ofxImGuiSurfing::AddSpacingSeparated();
 
-					guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
 					if (!guiManager.bMinimize && frag5.active)
 						guiManager.AddGroup(frag5.parameters, fgT5, fgG5);
+					guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
 #endif					
+
+
+					//					fgG1 = (frag1.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+					//					fgG2 = (frag2.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+					//					fgG3 = (frag3.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+					//#ifdef USE_FX_DELAYS
+					//					fgG4 = (frag4.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+					//					fgG5 = (frag5.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+					//#endif
+
+					//					fgT1 = frag1.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+					//					fgT2 = frag2.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+					//					fgT3 = frag3.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+					//#ifdef USE_FX_DELAYS
+					//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+					//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+					//#endif
 				}
 				guiManager.endWindow();
 			}
