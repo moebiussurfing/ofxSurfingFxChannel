@@ -128,7 +128,7 @@ void ofxSurfingFxChannel::startup()
 	presetsManager.bGui_Parameters = false;
 	presetsManager.bGui_ClickerFloating = false;
 	presetsManager.bGui_ClickerSimple = true;
-	presetsManager.bMinimize_Clicker = true;
+	presetsManager.bMinimize = true;
 	presetsManager.setPlayerPlay(false);
 	presetsManager.setMaxPresetsAmountPerRowClickerFloat(2);
 	presetsManager.setMaxPresetsAmountPerRowClickerMini(2);
@@ -963,6 +963,10 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 		else if (key == 'E') {
 			bENABLE_Fx = !bENABLE_Fx;
 		}
+
+		else if (key == 'G') {
+			bGui = !bGui;
+		}
 	}
 }
 
@@ -1053,82 +1057,77 @@ void ofxSurfingFxChannel::drawImGui()
 {
 	guiManager.begin(); // global begin
 	{
-		static bool bOpen1 = true;
+		//if (guiManager.beginWindow("FX CHANNEL"))
+		if (guiManager.beginWindow(bGui))
 		{
-			ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-			if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+			// Global Enable
 
-			guiManager.beginWindow("FX CHANNEL", &bOpen1, window_flags);
+			guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
+
+			ImGui::Spacing();
+
+			guiManager.Add(bSettings, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+
+			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+
+			if (!guiManager.bMinimize)
 			{
-				// Global Enable
+				guiManager.Add(bKeys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
 
-				guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
+				////TODO:
+				//// trig to implement workflow collapse / expand groups not working...
+				//////guiManager.Add(bCollapse, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, true);
+				//////guiManager.Add(bExpand, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, false);
+				////TODO:
+				//ImGui::Spacing();
+				//guiManager.Add(bCollapse, OFX_IM_BUTTON_SMALL, 2, true);
+				//guiManager.Add(bExpand, OFX_IM_BUTTON_SMALL, 2, false);
+			}
 
-				ImGui::Spacing();
+			ImGui::Spacing();
 
-				guiManager.Add(bSettings, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-
-				guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-
-				if (!guiManager.bMinimize)
-				{
-					guiManager.Add(bKeys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
-					////TODO:
-					//// trig to implement workflow collapse / expand groups not working...
-					//////guiManager.Add(bCollapse, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, true);
-					//////guiManager.Add(bExpand, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, false);
-					////TODO:
-					//ImGui::Spacing();
-					//guiManager.Add(bCollapse, OFX_IM_BUTTON_SMALL, 2, true);
-					//guiManager.Add(bExpand, OFX_IM_BUTTON_SMALL, 2, false);
-				}
-
-				ImGui::Spacing();
-
-				//--
+			//--
 
 #ifdef USE_ofxSurfingPresets
-				if (!guiManager.bMinimize)
+			if (!guiManager.bMinimize)
+			{
+				ofxImGuiSurfing::AddSpacingSeparated();
+
+				guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+				if (presetsManager.bGui_Global)
 				{
-					ofxImGuiSurfing::AddSpacingSeparated();
-
-					guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-					if (presetsManager.bGui_Global) 
-					{
-						guiManager.Indent();
-						guiManager.Add(presetsManager.bGui_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-						presetsManager.draw_ImGui_ClickerSimple(false, false);
-						guiManager.Unindent();
-					}
-
-					ofxImGuiSurfing::AddSpacingSeparated();
+					guiManager.Indent();
+					//guiManager.Add(presetsManager.bGui_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+					presetsManager.draw_ImGui_ClickerSimple(false, false);
+					guiManager.Unindent();
 				}
+
+				ofxImGuiSurfing::AddSpacingSeparated();
+			}
 #endif
-				//--
+			//--
 
-				ImGui::Spacing();
+			ImGui::Spacing();
 
-				//-
+			//-
 
-				// Controls
+			// Controls
 
-				if (!guiManager.bMinimize) guiManager.AddGroup(params_Subcontrol, ImGuiTreeNodeFlags_None);
+			if (!guiManager.bMinimize) guiManager.AddGroup(params_Subcontrol, ImGuiTreeNodeFlags_None);
 
-				//// Enable Fx Toggles
-				//guiManager.AddGroup(params_Subcontrol2, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
+			//// Enable Fx Toggles
+			//guiManager.AddGroup(params_Subcontrol2, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
 
-				//-
+			//-
 
 #ifdef USE_ofxPresetsManager
-				if (!guiManager.bMinimize)
-				{
-					AddSpacingSeparated();
-					guiManager.Add(bGui_Presets, OFX_IM_TOGGLE_BIG);
-					ImGui::Spacing();
-				}
-#endif
+			if (!guiManager.bMinimize)
+			{
+				AddSpacingSeparated();
+				guiManager.Add(bGui_Presets, OFX_IM_TOGGLE_BIG);
+				ImGui::Spacing();
 			}
+#endif
 			guiManager.endWindow();
 		}
 
@@ -1146,63 +1145,53 @@ void ofxSurfingFxChannel::drawImGui()
 //#endif
 //			)
 
-		if (bSettings)
+		if (guiManager.beginWindow(bSettings))
 		{
-			{
-				ImGuiWindowFlags window_flags = ImGuiWindowFlags_None;
-				if (guiManager.bAutoResize) window_flags |= ImGuiWindowFlags_AlwaysAutoResize;
+			//TODO:
+			//fold expand/collapse
+			//https://github.com/ocornut/imgui/issues/1131
 
-				guiManager.beginWindow("FX SETTINGS", &(bool)bSettings.get(), window_flags);
-				{
-					//TODO:
-					//fold expand/collapse
-					//https://github.com/ocornut/imgui/issues/1131
+			guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
+			if (!guiManager.bMinimize && frag1.active)
+				guiManager.AddGroup(frag1.parameters, fgT1, fgG1);
+			ofxImGuiSurfing::AddSpacingSeparated();
 
+			guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
+			if (!guiManager.bMinimize && frag2.active)
+				guiManager.AddGroup(frag2.parameters, fgT2, fgG2);
+			ofxImGuiSurfing::AddSpacingSeparated();
 
-					if (!guiManager.bMinimize && frag1.active)
-						guiManager.AddGroup(frag1.parameters, fgT1, fgG1);
-					guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
-					ofxImGuiSurfing::AddSpacingSeparated();
-
-					if (!guiManager.bMinimize && frag2.active)
-						guiManager.AddGroup(frag2.parameters, fgT2, fgG2);
-					guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
-					ofxImGuiSurfing::AddSpacingSeparated();
-
-					if (!guiManager.bMinimize && frag3.active)
-						guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
-					guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
-					ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
+			if (!guiManager.bMinimize && frag3.active)
+				guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
+			ofxImGuiSurfing::AddSpacingSeparated();
 #ifdef USE_FX_DELAYS	
-					if (!guiManager.bMinimize && frag4.active)
-						guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
-					guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
-					ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
+			if (!guiManager.bMinimize && frag4.active)
+				guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
+			ofxImGuiSurfing::AddSpacingSeparated();
 
-					if (!guiManager.bMinimize && frag5.active)
-						guiManager.AddGroup(frag5.parameters, fgT5, fgG5);
-					guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
+			guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
+			if (!guiManager.bMinimize && frag5.active)
+				guiManager.AddGroup(frag5.parameters, fgT5, fgG5);
 #endif					
 
+			//					fgG1 = (frag1.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+			//					fgG2 = (frag2.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+			//					fgG3 = (frag3.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+			//#ifdef USE_FX_DELAYS
+			//					fgG4 = (frag4.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+			//					fgG5 = (frag5.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
+			//#endif
 
-					//					fgG1 = (frag1.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-					//					fgG2 = (frag2.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-					//					fgG3 = (frag3.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-					//#ifdef USE_FX_DELAYS
-					//					fgG4 = (frag4.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-					//					fgG5 = (frag5.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-					//#endif
-
-					//					fgT1 = frag1.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-					//					fgT2 = frag2.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-					//					fgT3 = frag3.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-					//#ifdef USE_FX_DELAYS
-					//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-					//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-					//#endif
-				}
-				guiManager.endWindow();
-			}
+			//					fgT1 = frag1.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+			//					fgT2 = frag2.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+			//					fgT3 = frag3.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+			//#ifdef USE_FX_DELAYS
+			//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+			//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
+			//#endif
+			guiManager.endWindow();
 		}
 	}
 	guiManager.end(); // global end

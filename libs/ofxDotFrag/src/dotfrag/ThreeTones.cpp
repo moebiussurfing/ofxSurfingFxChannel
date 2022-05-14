@@ -8,13 +8,13 @@ ofx::dotfrag::ThreeTones::ThreeTones() {
     
     name("THREE TONES");
     uniform( mix.set( "MIX", 1.0f, 0.0f, 1.0f), "u_mix");
-    uniform( thresholds[0].set("THRESHOLD 0 1", 0.0f, 0.0f, 1.0f), "u_low");
-    uniform( thresholds[1].set("THRESHOLD 1 2", 0.4f, 0.0f, 1.0f), "u_middle" );
-    uniform( fade.set("THRESHOLD FADE", 0.1f, 0.0f, 0.3f), "u_fade" );
+    uniform( thresholds[0].set("THRESH 0 1", 0.0f, 0.0f, 1.0f), "u_low");
+    uniform( thresholds[1].set("THRESH 1 2", 0.4f, 0.0f, 1.0f), "u_middle" );
+    uniform( fade.set("THRESH FADE", 0.1f, 0.0f, 0.3f), "u_fade" );
     
-    uniform( colors[0].set( "COLOR 0", ofColor(0), ofColor(0), ofColor(255)), "u_color_0" );
-    uniform( colors[1].set( "COLOR 1", ofColor(0, 255, 0), ofColor(0), ofColor(255)), "u_color_1" );
-    uniform( colors[2].set( "COLOR 2", ofColor(255), ofColor(0), ofColor(255)), "u_color_2" );
+    uniform( colors[0].set( "C0", ofColor(0), ofColor(0), ofColor(255)), "u_color_0" );
+    uniform( colors[1].set( "C1", ofColor(0, 255, 0), ofColor(0), ofColor(255)), "u_color_1" );
+    uniform( colors[2].set( "C2", ofColor(255), ofColor(0), ofColor(255)), "u_color_2" );
 
     source( code );
 }
