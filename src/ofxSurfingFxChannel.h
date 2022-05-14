@@ -10,6 +10,7 @@
 
 //	TODO:
 //	
+//	fix autopopulate more presets always..
 //	fix groups gui workflow expand/collapse
 //	add one extra fx: gpu lut?
 //	reduce callbacks?
@@ -86,6 +87,7 @@ public:
 	void windowResized(int w, int h);
 
 	void drawGui();
+	void drawGui_User();//main controls
 
 	//--
 
@@ -246,7 +248,8 @@ public:
 	void end();
 
 	ofParameter<bool> bENABLE_Fx; // main enabler/bypass toggle
-	ofParameter<bool> bGui{ "Show Gui", true }; // all gui
+	ofParameter<bool> bGui{ "FX CH", true }; // all gui
+	ofParameter<bool> bGui_User{ "FX CH USER", true }; // user gui
 
 private:
 	ofParameter<int> SELECT_Fx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
@@ -257,7 +260,7 @@ private:
 	ofParameter<bool> bAll{ "All", false };
 	ofParameter<bool> bNone{ "None", false };
 	ofParameter<bool> bKeys{ "Keys", true };
-	ofParameter<bool> bSettings{ "FX SETTINGS", false };
+	ofParameter<bool> bGui_Edit{ "FX CH EDIT", false };
 
 #ifdef USE_ofxPresetsManager
 	ofParameter<bool> bGui_Presets{ "SHOW PRESETS", true };

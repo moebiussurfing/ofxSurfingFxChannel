@@ -31,6 +31,9 @@ const std::string ofx::dotfrag::Delay::code = OFXDOTFRAGSOURCE(
 
     void main (void) {
         
+		//TODO:
+		if (u_feedback == 1.0f) u_feedback = 0.9995f;
+
         vec2 st = gl_FragCoord.xy/u_resolution;
         
         vec4 now = texture2D(u_tex0, st);

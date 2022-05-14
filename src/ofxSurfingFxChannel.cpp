@@ -191,7 +191,7 @@ void ofxSurfingFxChannel::startup()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setup_FxChannel()
 {
-	// parameters
+	// Parameters
 
 	// customize names to tweak gui labels
 	frag1.parameters.setName("1 " + frag1.parameters.getName());
@@ -204,7 +204,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 
 	//--
 
-	// gui layout
+	// Gui layout
 #ifdef USE_ofxGui
 	position_Gui.set("GUI POSITION",
 		glm::vec2(window_W * 0.5, window_H * 0.5),
@@ -216,7 +216,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	//--
 
 	// Presets Params
-	params_Preset.setName("FX_CHANNEL");
+	params_Preset.setName("FX CH");
 
 	// fx
 	params_Preset.add(frag1.parameters);
@@ -246,7 +246,7 @@ void ofxSurfingFxChannel::setup_FxChannel()
 	params_Session.add(SELECT_Fx);
 	params_Session.add(bSolo);
 	params_Session.add(guiManager.bMinimize);
-	params_Session.add(bSettings);
+	params_Session.add(bGui_Edit);
 
 #ifdef USE_ofxGui
 	params_Session.add(position_Gui);
@@ -1057,17 +1057,12 @@ void ofxSurfingFxChannel::drawImGui()
 {
 	guiManager.begin(); // global begin
 	{
-		//if (guiManager.beginWindow("FX CHANNEL"))
 		if (guiManager.beginWindow(bGui))
 		{
-			// Global Enable
-
 			guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
-
-			ImGui::Spacing();
-
-			guiManager.Add(bSettings, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-
+			guiManager.AddSpacing();
+			guiManager.Add(bGui_Edit, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+			guiManager.Add(bGui_User, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 
 			if (!guiManager.bMinimize)
@@ -1084,14 +1079,14 @@ void ofxSurfingFxChannel::drawImGui()
 				//guiManager.Add(bExpand, OFX_IM_BUTTON_SMALL, 2, false);
 			}
 
-			ImGui::Spacing();
+			guiManager.AddSpacing();
 
 			//--
 
 #ifdef USE_ofxSurfingPresets
 			if (!guiManager.bMinimize)
 			{
-				ofxImGuiSurfing::AddSpacingSeparated();
+				guiManager.AddSpacingSeparated();
 
 				guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 				if (presetsManager.bGui_Global)
@@ -1102,7 +1097,7 @@ void ofxSurfingFxChannel::drawImGui()
 					guiManager.Unindent();
 				}
 
-				ofxImGuiSurfing::AddSpacingSeparated();
+				guiManager.AddSpacingSeparated();
 			}
 #endif
 			//--
@@ -1133,19 +1128,7 @@ void ofxSurfingFxChannel::drawImGui()
 
 		//--
 
-		// Fx groups
-
-//		if (frag1.active ||
-//			frag2.active ||
-//			frag3.active
-//#ifdef USE_FX_DELAYS
-//			||
-//			frag4.active ||
-//			frag5.active
-//#endif
-//			)
-
-		if (guiManager.beginWindow(bSettings))
+		if (guiManager.beginWindow(bGui_Edit))
 		{
 			//TODO:
 			//fold expand/collapse
@@ -1154,22 +1137,22 @@ void ofxSurfingFxChannel::drawImGui()
 			guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag1.active)
 				guiManager.AddGroup(frag1.parameters, fgT1, fgG1);
-			ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.AddSpacingSeparated();
 
 			guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag2.active)
 				guiManager.AddGroup(frag2.parameters, fgT2, fgG2);
-			ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.AddSpacingSeparated();
 
 			guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag3.active)
 				guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
-			ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.AddSpacingSeparated();
 #ifdef USE_FX_DELAYS	
 			guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag4.active)
 				guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
-			ofxImGuiSurfing::AddSpacingSeparated();
+			guiManager.AddSpacingSeparated();
 
 			guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag5.active)
@@ -1191,8 +1174,50 @@ void ofxSurfingFxChannel::drawImGui()
 			//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
 			//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
 			//#endif
+
 			guiManager.endWindow();
 		}
+
+		//--
+
+		if (guiManager.beginWindow(bGui_User))
+		{
+			static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
+			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
+
+			if (frag1.active) {
+				guiManager.Add(frag1.low, style);
+				guiManager.Add(frag1.high, style);
+				//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
+			}
+			if (frag2.active) {
+				guiManager.Add(frag2.mix, style);
+				guiManager.Add(frag2.thresholds[0], style);
+				guiManager.Add(frag2.thresholds[1], style);
+				guiManager.Add(frag2.fade, style);
+				guiManager.AddSpacing();
+			}
+			if (frag3.active) {
+				if(!frag1.active) guiManager.Add(frag3.hue, style);
+				guiManager.Add(frag3.brightness, style);
+				guiManager.Add(frag3.contrast, style);
+				guiManager.AddSpacing();
+			}
+
+#ifdef USE_FX_DELAYS
+			if (frag4.active) {
+				guiManager.Add(frag4.feedback, style);
+				guiManager.AddSpacing();
+			}
+			if (frag5.active) {
+				guiManager.Add(frag5.gain, style);
+				guiManager.AddSpacing();
+			}
+#endif
+
+			guiManager.endWindow();
+		}
+
 	}
 	guiManager.end(); // global end
 

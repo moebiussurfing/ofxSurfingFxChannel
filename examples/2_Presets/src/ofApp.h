@@ -2,18 +2,21 @@
 
 #include "ofMain.h"
 
-// NOTE ABOUT THIS EXAMPLE:
-//
-// This example includes a Preset Manager
-//
-// To run this example out-of-the-box you must enable the presets manager add-on
-// uncommenting this line on ofxSurfingFxChannel.h 
-//#define USE_ofxSurfingPresets // 1. recommended
+/*
+
+	NOTE ABOUT THIS EXAMPLE:
+
+	This example includes a Preset Manager
+	To run this example out-of-the-box you must enable the presets manager add-on
+	uncommenting this line on ofxSurfingFxChannel.h
+	#define USE_ofxSurfingPresets
+
+*/
+
 
 #include "ofxSurfingFxChannel.h"
 
 #include "ofxWindowApp.h" //-> not required
-#include "ofxSurfing_Widgets.h"
 
 class ofApp : public ofBaseApp
 {
