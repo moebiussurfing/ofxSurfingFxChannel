@@ -11,6 +11,8 @@ Monochrome, HSB, Hue, Saturation, Brightness, Contrast, Tree Tones Colors, Delay
 
 Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](https://github.com/npisanti).
 
+[Screenshots](https://github.com/moebiussurfing/ofxSurfingFxChannel/blob/master/examples/README.md)  
+
 ## Features
 - Channel Strip to image processing with common Effects.
 - Auto Store/Recall Settings.
