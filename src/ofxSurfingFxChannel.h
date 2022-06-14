@@ -6,27 +6,31 @@
 
 #include "ofMain.h"
 
-//---
+//----
 
-//	TODO:
-//	
-//	fix autopopulate more presets always..
-//	fix groups gui workflow expand/collapse
-//	add one extra fx: gpu lut?
+/*
+ 
+	TODO:
 
-//---
+	+ fix auto populate more presets always..
+	+ fix groups GUI workflow expand/collapse
+	+ add one extra Fx: GPU Lut?
+
+*/
+
+//----
 
 
 // Optional:
 
 // To include some extra fx's: 
-// delay and echotrace
+// delay and echo trace
 //#define USE_FX_DELAYS	
 
 //-
 
-#define USE_ofxGui // simpler gui could be activated with small modifications to remove ImGui dependency (TODO)
-//#define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // ImGui
+//#define USE_ofxGui // Simpler gui could be activated to remove ImGui dependency.
+#define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
 
 //-
 

@@ -209,7 +209,7 @@ void ofxSurfingFxChannel::setup_Params()
 
 	//--
 
-	// customize names to tweak GUI labels
+	// Customize names to tweak GUI labels
 
 	frag1.parameters.setName("FX1 " + frag1.parameters.getName());
 	frag2.parameters.setName("FX2 " + frag2.parameters.getName());
@@ -250,11 +250,11 @@ void ofxSurfingFxChannel::setup_Params()
 	params_Preview.add(bEnableGuiWorkflow);
 	params_Preview.add(bKeys);
 
-	//-
+	//--
 
-	// 2. Fx params
+	// 2. Fx Params
 
-	// renames
+	// Renames
 
 	frag1.active.setName("MONOCHROME");
 	frag2.active.setName("THREETONES");
@@ -264,7 +264,10 @@ void ofxSurfingFxChannel::setup_Params()
 	frag5.active.setName("ECHOTRACE");
 #endif
 
-	// linked enablers
+	//--
+
+	// Linked Enablers
+
 	ENABLE_Monochrome.makeReferenceTo(frag1.active);
 	ENABLE_ThreeTones.makeReferenceTo(frag2.active);
 	ENABLE_HSB.makeReferenceTo(frag3.active);
@@ -273,7 +276,10 @@ void ofxSurfingFxChannel::setup_Params()
 	ENABLE_Echotrace.makeReferenceTo(frag5.active);
 #endif
 
-	// queue params
+	//--
+
+	// Queue Params
+
 	params_Enablers.setName("ENABLERS");
 	params_Enablers.add(bEnable_Fx);
 	params_Enablers.add(ENABLE_Monochrome);
@@ -305,13 +311,10 @@ void ofxSurfingFxChannel::setup_Params()
 	params_Control.add(bGui_Presets);
 #endif
 
-	//#ifdef USE_ofxGui
-	//	params_Control.add(position_Gui);
-	//#endif
-
 	//--
 
-	// exclude
+	// Exclude
+
 	bReset.setSerializable(false);
 	bAll.setSerializable(false);
 	bNone.setSerializable(false);
@@ -319,9 +322,10 @@ void ofxSurfingFxChannel::setup_Params()
 	//indexFx.setSerializable(false);
 	//bSolo.setSerializable(false);
 
-	//-
+	//--
 
 	// Callbacks
+
 	ofAddListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed);
 
 	//--
@@ -344,7 +348,7 @@ void ofxSurfingFxChannel::setup_Params()
 
 	// Presets Manager
 
-	// handles fx presets! (with all the settings)
+	// Handles fx presets! (with all the settings)
 
 #ifdef USE_ofxSurfingPresets
 	presetsManager.setPathPresets(path_GLOBAL_Folder + "/" + "Presets");
@@ -354,10 +358,10 @@ void ofxSurfingFxChannel::setup_Params()
 
 	//presetsManager.setName("myPlayer");
 
-	// add params
+	// Add params
 	presetsManager.addGroup(params_Preset);
 
-	// some preferences for this situation: being minimal
+	// Some preferences for this situation: being minimal
 	presetsManager.bGui_Global.setName("PRESETS");
 	presetsManager.bGui.setName("Fx Presets");
 	presetsManager.bGui = true;
