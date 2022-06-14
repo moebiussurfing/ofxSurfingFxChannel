@@ -1,7 +1,7 @@
 #include "ofApp.h"
 
 //--------------------------------------------------------------
-void ofApp::setup() 
+void ofApp::setup()
 {
 	img.load("image.jpg");
 
@@ -9,11 +9,10 @@ void ofApp::setup()
 }
 
 //--------------------------------------------------------------
-void ofApp::update() 
+void ofApp::update()
 {
 	channelFx.begin(); // -> feed your scene inside
 	{
-		// animated zoom
 		img.draw(0, 0, ofGetWidth(), ofGetHeight());
 	}
 	channelFx.end();
@@ -27,7 +26,6 @@ void ofApp::draw()
 }
 
 //--------------------------------------------------------------
-void ofApp::windowResized(int w, int h) 
-{
+void ofApp::windowResized(int w, int h) {
 	channelFx.windowResized(w, h); //-> update required when window size changes
 }

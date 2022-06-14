@@ -1,0 +1,3 @@
+ofxGui
+ofxSurfingFxChannel
+ofxSurfingHelpers

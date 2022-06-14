@@ -1,6 +1,75 @@
 #include "ofxSurfingFxChannel.h"
 
 //--------------------------------------------------------------
+ofxSurfingFxChannel::ofxSurfingFxChannel()
+{
+	// settings folder
+	path_GLOBAL_Folder = "ofxSurfingFxChannel";
+
+	// TODO: not required
+	path_fileName_Session = "ofxSurfingFxChannel_Session.json";
+
+#ifndef USE_ofxPresetsManager
+	path_fileName_Preset = "ofxSurfingFxChannel_Preset.json"; // not used when using presetsManager
+#endif
+
+	addKeysListeners();
+};
+
+//--------------------------------------------------------------
+ofxSurfingFxChannel::~ofxSurfingFxChannel()
+{
+	// callback
+	ofRemoveListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed);
+
+	removeKeysListeners();
+
+	exit();
+};
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::doReset()
+{
+	// reset all fx
+	{
+		if (bSolo.get()) bSolo = false;
+
+		frag1.active = false;
+		frag1.low = 0;
+		frag1.high = 1;
+
+		frag2.active = false;
+		frag2.mix = 1;
+		frag2.thresholds[0] = 0;
+		frag2.thresholds[1] = 0.5f;
+		frag2.fade = 0.3f;
+		frag2.colors[0] = 0;
+		frag2.colors[1] = 128;
+		frag2.colors[2] = 255;
+
+		frag3.active = true;
+		frag3.hue = 0;
+		frag3.brightness = 0;
+		frag3.contrast = 1;
+		frag3.saturation = 1;
+
+#ifdef USE_FX_DELAYS
+
+		frag4.active = false;
+		frag4.feedback = 0;
+		frag4.blendmode = 0;
+
+		frag5.active = false;
+		frag5.gain = 0.7f;
+		frag5.threshold = 0.55f;
+		frag5.invert = false;
+		frag5.hardCutoff = false;
+
+#endif
+	}
+}
+
+//--------------------------------------------------------------
 void ofxSurfingFxChannel::fboAllocate()
 {
 	window_W = ofGetWidth();
@@ -21,6 +90,7 @@ void ofxSurfingFxChannel::fboAllocate()
 
 		fbo_FxChain.allocate(fboSettings);
 
+		//TODO:
 		// clear
 		fbo_FxChain.begin();
 		ofClear(0, 0, 0, 255);
@@ -28,7 +98,7 @@ void ofxSurfingFxChannel::fboAllocate()
 
 		//-
 
-		// fx
+		// Fx
 		frag1.allocate(fbo_FxChain);
 		frag2.allocate(fbo_FxChain);
 		frag3.allocate(fbo_FxChain);
@@ -44,15 +114,20 @@ void ofxSurfingFxChannel::fboAllocate()
 }
 
 //--------------------------------------------------------------
-void ofxSurfingFxChannel::setup()
+void ofxSurfingFxChannel::setupGui()
 {
-	bDISABLECALLBACKS = true;
-
-	fboAllocate();
+	ofLogNotice(__FUNCTION__);
 
 	//-
 
-	setup_FxChannel();
+#ifdef USE_ofxGui
+
+	ofxSurfingHelpers::setThemeDarkMini_ofxGui();
+
+	gui.setup("FX CH");
+	gui.add(params_Control);
+
+#endif
 
 	//----
 
@@ -60,27 +135,35 @@ void ofxSurfingFxChannel::setup()
 
 	guiManager.setup();
 
-	////TODO:
-	//// Gui Workflow
-	//fgT0 = ImGuiTreeNodeFlags_DefaultOpen;
-	////fgT0 = ImGuiTreeNodeFlags_CollapsingHeader;
-	////fgT0 = ImGuiTreeNodeFlags_None;
-
-	//fgT1 = fgT0;
-	//fgT2 = fgT0;
-	//fgT3 = fgT0;
-	//fgT4 = fgT0;
-	//fgT5 = fgT0;
-	//fgT6 = fgT0;
-
 	setupStyles();
 
 #endif
+}
 
-	//----
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::setup()
+{
+	ofLogNotice(__FUNCTION__);
+
+	fboAllocate();
+
+	//--
+
+	setup_Params();
+
+	setupGui();
+
+	//--
 
 	// Startup 
 	startup();
+}
+
+//TODO:
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::startupDelayed()
+{
+	ofLogNotice(__FUNCTION__);
 }
 
 //--------------------------------------------------------------
@@ -90,20 +173,174 @@ void ofxSurfingFxChannel::startup()
 
 	//-
 
-	bDISABLECALLBACKS = false;
+	bDISABLE_CALLBACKS = false;
 
 	//-
-
-	// Load settings
-
-	ofxSurfingHelpers::loadGroup(params_Session, path_GLOBAL_Folder + "/" + path_fileName_Session);
 
 	// Not required when handled by the presets manager
 #ifndef USE_ofxPresetsManager
 	ofxSurfingHelpers::loadGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
 #endif
 
+	// Load Session Settings
+	ofxSurfingHelpers::loadGroup(params_Session, path_GLOBAL_Folder + "/" + path_fileName_Session);
+
+	//--
+
+#ifdef USE_ofxGui
+	gui.setPosition(position_Gui->x, position_Gui->y);
+#endif
+
+	bFlagRefresh = true;
+
 	//-
+
+	// Refresh Gui workflow
+
+	refresh_GuiMinimize();
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::setup_Params()
+{
+	// Parameters
+
+	bEnable_Fx.set("ENABLE", true);
+
+	//--
+
+	// customize names to tweak GUI labels
+
+	frag1.parameters.setName("FX1 " + frag1.parameters.getName());
+	frag2.parameters.setName("FX2 " + frag2.parameters.getName());
+	frag3.parameters.setName("FX3 " + frag3.parameters.getName());
+
+#ifdef USE_FX_DELAYS
+	frag4.parameters.setName("FX4 " + frag4.parameters.getName());
+	frag5.parameters.setName("FX5 " + frag5.parameters.getName());
+#endif
+
+	//--
+
+	// Gui layout
+
+#ifdef USE_ofxGui
+
+	position_Gui.set("GUI POSITION",
+		glm::vec2(10, 10),
+		glm::vec2(0, 0),
+		glm::vec2(1920, 1080)
+	);
+
+#endif
+
+	//--
+
+	// Gui
+
+	// 1. Preview controls
+
+	params_Preview.setName("PREVIEW");
+	params_Preview.add(indexFx);
+	params_Preview.add(indexFx_Name);
+	params_Preview.add(bSolo);
+	params_Preview.add(bReset);
+	params_Preview.add(bAll);
+	params_Preview.add(bNone);
+	params_Preview.add(bEnableGuiWorkflow);
+	params_Preview.add(bKeys);
+
+	//-
+
+	// 2. Fx params
+
+	// renames
+
+	frag1.active.setName("MONOCHROME");
+	frag2.active.setName("THREETONES");
+	frag3.active.setName("HSB");
+#ifdef USE_FX_DELAYS
+	frag4.active.setName("DELAY");
+	frag5.active.setName("ECHOTRACE");
+#endif
+
+	// linked enablers
+	ENABLE_Monochrome.makeReferenceTo(frag1.active);
+	ENABLE_ThreeTones.makeReferenceTo(frag2.active);
+	ENABLE_HSB.makeReferenceTo(frag3.active);
+#ifdef USE_FX_DELAYS
+	ENABLE_Delay.makeReferenceTo(frag4.active);
+	ENABLE_Echotrace.makeReferenceTo(frag5.active);
+#endif
+
+	// queue params
+	params_Enablers.setName("ENABLERS");
+	params_Enablers.add(bEnable_Fx);
+	params_Enablers.add(ENABLE_Monochrome);
+	params_Enablers.add(ENABLE_ThreeTones);
+	params_Enablers.add(ENABLE_HSB);
+
+#ifdef USE_FX_DELAYS
+	params_Enablers.add(ENABLE_Delay);
+	params_Enablers.add(ENABLE_Echotrace);
+#endif
+
+	//--
+
+	// To use callbacks only
+
+	params_Control.setName("FX CHANNEL");
+	params_Control.add(params_Preview);
+	params_Control.add(params_Enablers);
+	params_Control.add(params_Preset);
+
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+	params_Control.add(guiManager.bMinimize);
+#endif
+
+#ifdef USE_ofxPresetsManager
+	params_PresetsManagerTools.add(presetsManager.getParamsControls());
+	// to use callbacks only
+	params_Control.add(params_PresetsManagerTools);
+	params_Control.add(bGui_Presets);
+#endif
+
+	//#ifdef USE_ofxGui
+	//	params_Control.add(position_Gui);
+	//#endif
+
+	//--
+
+	// exclude
+	bReset.setSerializable(false);
+	bAll.setSerializable(false);
+	bNone.setSerializable(false);
+	indexFx_Name.setSerializable(false);
+	//indexFx.setSerializable(false);
+	//bSolo.setSerializable(false);
+
+	//-
+
+	// Callbacks
+	ofAddListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed);
+
+	//--
+
+	// Presets Params
+
+	params_Preset.setName("PRESET");
+	params_Preset.add(frag1.parameters);
+	params_Preset.add(frag2.parameters);
+	params_Preset.add(frag3.parameters);
+
+#ifdef USE_FX_DELAYS
+	params_Preset.add(frag4.parameters);
+	params_Preset.add(frag5.parameters);
+	//params_Preset.add(frag6.parameters);
+	indexFx.setMax(5);
+#endif
+
+	//--
 
 	// Presets Manager
 
@@ -140,231 +377,42 @@ void ofxSurfingFxChannel::startup()
 	presetsManager.refresh();
 #endif
 
-	//-
-
-	// Refresh Gui workflow
-
-	//TODO:
-	bEnableGuiWorkflow;
-	//	if (bEnableGuiWorkflow)
-	//	{
-	//		refresh_Gui();
-	//	}
-	//	else
-	//	{
-	//	}
-	//
-	//#ifdef USE_ofxGui
-	//	refresh_Gui_minimize();
-	//#endif
-	//
-	//#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-	//	refresh_Gui_minimize();
-	//#endif
-
-	//-
-
-	// Reinitialize or overwrite some possibly loaded settings.
-
-	//guiManager.bMinimize = false;
-
-	//setGuiPosition(glm::vec2(ofGetWidth() - 230, 10));
-	//setEnableKeys(true);
-}
-
-////--------------------------------------------------------------
-//void ofxSurfingFxChannel::setActive(bool b)
-//{
-//	bActive = b;
-//	setGuiVisible(b);
-//	setKeysEnable(b);
-//}
-
-////--------------------------------------------------------------
-//void ofxSurfingFxChannel::setKeysEnable(bool b)
-//{
-//	bKeys = b;
-//
-//	presetsManager.setEnableKeys(b);
-//}
-
-//--------------------------------------------------------------
-void ofxSurfingFxChannel::setup_FxChannel()
-{
-	// Parameters
-
-	// customize names to tweak gui labels
-	frag1.parameters.setName("1 " + frag1.parameters.getName());
-	frag2.parameters.setName("2 " + frag2.parameters.getName());
-	frag3.parameters.setName("3 " + frag3.parameters.getName());
-#ifdef USE_FX_DELAYS
-	frag4.parameters.setName("4 " + frag4.parameters.getName());
-	frag5.parameters.setName("5 " + frag5.parameters.getName());
-#endif
-
 	//--
 
-	// Gui layout
-#ifdef USE_ofxGui
-	position_Gui.set("GUI POSITION",
-		glm::vec2(window_W * 0.5, window_H * 0.5),
-		glm::vec2(0, 0),
-		glm::vec2(window_W, window_H)
-	);
-#endif
-
-	//--
-
-	// Presets Params
-	params_Preset.setName("FX CH");
-
-	// fx
-	params_Preset.add(frag1.parameters);
-	params_Preset.add(frag2.parameters);
-	params_Preset.add(frag3.parameters);
-
-	// extra fx
-#ifdef USE_FX_DELAYS
-	params_Preset.add(frag4.parameters);
-	params_Preset.add(frag5.parameters);
-	//params_Preset.add(frag6.parameters);
-	SELECT_Fx.setMax(5);
-#endif
-
-	//--
-
-	// exclude
-	SELECT_Fx_Name.setSerializable(false);
-	bSolo.setSerializable(false);
-	bReset.setSerializable(false);
-	bAll.setSerializable(false);
-	bNone.setSerializable(false);
-
-	//--
+	// Session Settings
 
 	params_Session.setName("AppSession");
-	params_Session.add(SELECT_Fx);
+	params_Session.add(indexFx);
 	params_Session.add(bSolo);
-	params_Session.add(guiManager.bMinimize);
+
+#ifndef USE_ofxGui
 	params_Session.add(bGui_Edit);
+#endif
+
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+	params_Session.add(guiManager.bMinimize);
+#endif
 
 #ifdef USE_ofxGui
 	params_Session.add(position_Gui);
 #endif
+
 #ifdef USE_ofxSurfingPresets
 	params_Session.add(presetsManager.bGui);
 #endif
 
 	//--
 
-	// Gui
-
-	// 1. user main controls
-
-	params_Subcontrol.setName("CONTROL");
-	params_Subcontrol.add(SELECT_Fx_Name);
-	params_Subcontrol.add(SELECT_Fx);
-	params_Subcontrol.add(bSolo);
-	params_Subcontrol.add(bReset);
-	params_Subcontrol.add(bAll);
-	params_Subcontrol.add(bNone);
-
-	//-
-
-	// 2. edit fx params
-
-	// linked enablers
-	ENABLE_Monochrome.makeReferenceTo(frag1.active);
-	ENABLE_ThreeTones.makeReferenceTo(frag2.active);
-	ENABLE_HSB.makeReferenceTo(frag3.active);
-#ifdef USE_FX_DELAYS
-	ENABLE_Delay.makeReferenceTo(frag4.active);
-	ENABLE_Echotrace.makeReferenceTo(frag5.active);
-#endif
-
-	//	// renames
-	//	ENABLE_Monochrome.setName("ENABLE MONOCHROME");
-	//	ENABLE_ThreeTones.setName("ENABLE THREETONES");
-	//	ENABLE_HSB.setName("ENABLE HSB");
-	//#ifdef USE_FX_DELAYS
-	//	ENABLE_Delay.setName("ENABLE DELAY");
-	//	ENABLE_Echotrace.setName("ENABLE ECHOTRACE");
-	//#endif
-
-	// renames
-	ENABLE_Monochrome.setName("MONOCHROME");
-	ENABLE_ThreeTones.setName("THREETONES");
-	ENABLE_HSB.setName("HSB");
-#ifdef USE_FX_DELAYS
-	ENABLE_Delay.setName("DELAY");
-	ENABLE_Echotrace.setName("ECHOTRACE");
-#endif
-
-	// queue params
-	params_Subcontrol2.setName("FX");
-	params_Subcontrol2.add(ENABLE_Monochrome);
-	params_Subcontrol2.add(ENABLE_ThreeTones);
-	params_Subcontrol2.add(ENABLE_HSB);
-#ifdef USE_FX_DELAYS
-	params_Subcontrol2.add(ENABLE_Delay);
-	params_Subcontrol2.add(ENABLE_Echotrace);
-#endif
-
-	//--
-
-	// To use callbacks only
-
-	params_Control.setName("ofxSurfingFxChannel");
-	params_Control.add(params_Subcontrol);
-	params_Control.add(params_Subcontrol2);
-	params_Control.add(params_Preset);
-	params_Control.add(guiManager.bMinimize);
-	params_Control.add(bKeys);
-	//params_Control.add(bCollapse);
-	//params_Control.add(bExpand);
-
 #ifdef USE_ofxPresetsManager
-	params_PresetsManagerTools.add(presetsManager.getParamsControls());
-	// to use callbacks only
-	params_Control.add(params_PresetsManagerTools);
-	params_Control.add(bGui_Presets);
-#endif
 
-	//--
-
-	//// exclude
-	//bCollapse.setSerializable(false);
-	//bExpand.setSerializable(false);
-
-	//-
-
-#ifdef USE_ofxGui
-	parameters.setName("ofxSurfingFxChannel");
-	parameters.add(params_Control);
-	//parameters.add(params_ControlExternal);
-	//parameters.add(params_Preset);
-
-	//-
-
-	ofxSurfingHelpers::setThemeDark_ofxGui();
-	gui.setup();
-	gui.add(parameters);
-	gui.setPosition(10, 20);
-#endif
-
-	//-
-
-	// callbacks
-	ofAddListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed_params_Control);
-
-	//-
-
-#ifdef USE_ofxPresetsManager
 	setup_PresetsManager();
+
 #endif
+
 }
 
 #ifdef USE_ofxPresetsManager
+
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setup_PresetsManager()
 {
@@ -387,527 +435,330 @@ void ofxSurfingFxChannel::setup_PresetsManager()
 	//-
 
 	params_ControlExternal.setName("CONTROLS");
-	params_ControlExternal.add(bENABLE_Fx);
+	params_ControlExternal.add(bEnable_Fx);
 	params_ControlExternal.add(presetsManager.getParamsControls());
 }
+
 #endif
 
 //--------------------------------------------------------------
-void ofxSurfingFxChannel::Changed_params_Control(ofAbstractParameter &e)
+void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 {
-	if (!bDISABLECALLBACKS)
+	if (bDISABLE_CALLBACKS) return;
+
+	std::string name = e.getName();
+	ofLogNotice(__FUNCTION__) << name << " : " << e;
+
+	//--
+
+	// Fx Selector
+
+	if (name == indexFx.getName())
 	{
-		std::string name = e.getName();
-		//if (name != "" && name != "exclude")
-		{
-			ofLogNotice(__FUNCTION__) << name << " : " << e;
-		}
+		bDISABLE_CALLBACKS = true;
 
-		if (false) {}
+		// if solo mutes all and enables selected
+		if (bSolo.get())
+		{
+			ENABLE_Monochrome.setWithoutEventNotifications(false);
+			ENABLE_ThreeTones.setWithoutEventNotifications(false);
+			ENABLE_HSB.setWithoutEventNotifications(false);
+
+#ifdef USE_FX_DELAYS
+			ENABLE_Delay.setWithoutEventNotifications(false);
+			ENABLE_Echotrace.setWithoutEventNotifications(false);
+#endif
+			//--
+
+			switch (indexFx.get())
+			{
+			case 1: ENABLE_Monochrome.setWithoutEventNotifications(true); break;
+			case 2: ENABLE_ThreeTones.setWithoutEventNotifications(true); break;
+			case 3: ENABLE_HSB.setWithoutEventNotifications(true); break;
+
+#ifdef USE_FX_DELAYS
+			case 4: ENABLE_Delay.setWithoutEventNotifications(true); break;
+			case 5: ENABLE_Echotrace.setWithoutEventNotifications(true); break;
+#endif
+			}
+		}
 
 		//--
 
-		// Fx Selector
-
-		else if (name == SELECT_Fx.getName())
 		{
-			// if solo mutes all and enables selected
-			if (bSolo.get())
-			{
-
-				frag1.active = false;
-				frag2.active = false;
-				frag3.active = false;
-#ifdef USE_FX_DELAYS
-				frag4.active = false;
-				frag5.active = false;
-#endif
-				switch (SELECT_Fx.get())
-				{
-				case 1:
-					frag1.active = true;
-					break;
-
-				case 2:
-					frag2.active = true;
-					break;
-
-				case 3:
-					frag3.active = true;
-					break;
-
-#ifdef USE_FX_DELAYS
-				case 4:
-					frag4.active = true;
-					break;
-
-				case 5:
-					frag5.active = true;
-					break;
-#endif
-				}
-			}
-
 			// set the name for selected
-			switch (SELECT_Fx.get())
-			{
-			case 0:
-				SELECT_Fx_Name = "";
-				break;
+			bFlagRefresh = true;
 
-			case 1:
-				SELECT_Fx_Name = "MONOCHROME";
-				break;
-
-			case 2:
-				SELECT_Fx_Name = "THREETONES";
-				break;
-
-			case 3:
-				SELECT_Fx_Name = "HSB";
-				break;
-
-#ifdef USE_FX_DELAYS
-			case 4:
-				SELECT_Fx_Name = "DELAY";
-				break;
-
-			case 5:
-				SELECT_Fx_Name = "ECHOTRACE";
-				break;
-#endif
-			}
-
-			//--
-
-			//TODO:
-			//if (bEnableGuiWorkflow) refresh_Gui();
-
-			//--
+			//			switch (indexFx.get())
+			//			{
+			//			case 1: indexFx_Name.setWithoutEventNotifications("MONOCHROME"); break;
+			//			case 2: indexFx_Name.setWithoutEventNotifications("THREETONES"); break;
+			//			case 3: indexFx_Name.setWithoutEventNotifications("HSB"); break;
+			//#ifdef USE_FX_DELAYS
+			//			case 4: indexFx_Name.setWithoutEventNotifications("DELAY"); break;
+			//			case 5: indexFx_Name.setWithoutEventNotifications("ECHOTRACE"); break;
+			//#endif
+			//			default: indexFx_Name.setWithoutEventNotifications(" "); break;
+			//			}
 		}
 
 		//--
 
-		// minimize
+		bDISABLE_CALLBACKS = false;
 
-		else if (name == guiManager.bMinimize.getName())
+		if (bEnableGuiWorkflow) refresh_GuiWorkflow();
+	}
+
+	//--
+
+	// minimize
+
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+
+	else if (name == guiManager.bMinimize.getName())
+	{
+		setupStyles();
+
+		if (bSolo) bSolo = false;
+	}
+
+#endif
+
+	//--
+
+	// solo
+
+	else if (name == bSolo.getName())
+	{
+		bDISABLE_CALLBACKS = true;
+
+		if (bSolo.get())
 		{
-			setupStyles();
+			ENABLE_Monochrome_PRE = ENABLE_Monochrome;
+			ENABLE_ThreeTones_PRE = ENABLE_ThreeTones;
+			ENABLE_HSB_PRE = ENABLE_HSB;
 
-			if (bSolo) bSolo = false;
-		}
+#ifdef USE_FX_DELAYS
+			ENABLE_Delay_PRE = ENABLE_Delay;
+			ENABLE_Echotrace_PRE = ENABLE_Echotrace;
+#endif
+			bSoloed = true;
 
-		// solo
+			//-
 
-		else if (name == bSolo.getName())
-		{
-			if (bSolo.get())
+			ENABLE_Monochrome.setWithoutEventNotifications(false);
+			ENABLE_ThreeTones.setWithoutEventNotifications(false);
+			ENABLE_HSB.setWithoutEventNotifications(false);
+
+#ifdef USE_FX_DELAYS
+			ENABLE_Delay.setWithoutEventNotifications(false);
+			ENABLE_Echotrace.setWithoutEventNotifications(false);
+#endif
+			//--
+
+			switch (indexFx.get())
 			{
-				bActive1_PRE = frag1.active;
-				bActive2_PRE = frag2.active;
-				bActive3_PRE = frag3.active;
-#ifdef USE_FX_DELAYS
-				bActive4_PRE = frag4.active;
-				bActive5_PRE = frag5.active;
-#endif
-				bSoloed = true;
-
-				//-
-
-				frag1.active = false;
-				frag2.active = false;
-				frag3.active = false;
+			case 1: ENABLE_Monochrome.setWithoutEventNotifications(true); break;
+			case 2: ENABLE_ThreeTones.setWithoutEventNotifications(true); break;
+			case 3: ENABLE_HSB.setWithoutEventNotifications(true); break;
 
 #ifdef USE_FX_DELAYS
-				frag4.active = false;
-				frag5.active = false;
+			case 4: ENABLE_Delay.setWithoutEventNotifications(true); break;
+			case 5: ENABLE_Echotrace.setWithoutEventNotifications(true); break;
 #endif
-				//-
-
-				switch (SELECT_Fx.get())
+			}
+		}
+		else //TODO: to improve workflow we should restore previous (PRE) states...
+		{
+			if (bSoloed)
+			{
+				bSoloed = false;
 				{
-				case 1:
-					frag1.active = true;
-					break;
-
-				case 2:
-					frag2.active = true;
-					break;
-
-				case 3:
-					frag3.active = true;
-					break;
-
+					ENABLE_Monochrome.setWithoutEventNotifications(ENABLE_Monochrome_PRE);
+					ENABLE_ThreeTones.setWithoutEventNotifications(ENABLE_ThreeTones_PRE);
+					ENABLE_HSB.setWithoutEventNotifications(ENABLE_HSB_PRE);
 #ifdef USE_FX_DELAYS
-				case 4:
-					frag4.active = true;
-					break;
-
-				case 5:
-					frag5.active = true;
-					break;
+					ENABLE_Delay.setWithoutEventNotifications(ENABLE_Delay_PRE);
+					ENABLE_Echotrace.setWithoutEventNotifications(ENABLE_Echotrace_PRE);
 #endif
 				}
-			}
-			else //TODO: to improve workflow we should restore previous (PRE) states...
-			{
-				if (bSoloed) {
-					bSoloed = false;
-					{
-						frag1.active = bActive1_PRE;
-						frag2.active = bActive2_PRE;
-						frag3.active = bActive3_PRE;
-#ifdef USE_FX_DELAYS
-						frag4.active = bActive4_PRE;
-						frag5.active = bActive5_PRE;
-#endif
-					}
-				}
-
-				// workflow
-//				switch (SELECT_Fx.get())
-//				{
-//				case 1:
-//				case 2:
-//				case 3:
-//
-//#ifdef USE_FX_DELAYS
-//				case 4:
-//				case 5:
-//#endif
-//					frag1.active = true;
-//					frag2.active = true;
-//					frag3.active = true;
-//
-//#ifdef USE_FX_DELAYS
-//					frag4.active = true;
-//					frag5.active = true;
-//#endif
-//					break;
-//				}
-			}
-		}
-
-		//----
-
-		// Enabler Toggles
-
-		else if (name == ENABLE_Monochrome.getName())
-		{
-			if (ENABLE_Monochrome.get() && bEnableGuiWorkflow) {
-				if (SELECT_Fx.get() != 1) {
-					SELECT_Fx = 1;
-				}
-			}
-			else
-			{
-			}
-		}
-		else if (name == ENABLE_ThreeTones.getName() && bEnableGuiWorkflow)
-		{
-			if (ENABLE_ThreeTones.get()) {
-				if (SELECT_Fx.get() != 2) {
-					SELECT_Fx = 2;
-				}
-			}
-			else
-			{
-			}
-		}
-		else if (name == ENABLE_HSB.getName() && bEnableGuiWorkflow)
-		{
-			if (ENABLE_HSB.get()) {
-				if (SELECT_Fx.get() != 3) {
-					SELECT_Fx = 3;
-				}
-			}
-			else
-			{
-			}
-		}
-
-#ifdef USE_FX_DELAYS
-		else if (name == ENABLE_Delay.getName() && bEnableGuiWorkflow)
-		{
-			if (ENABLE_Delay.get()) {
-				if (SELECT_Fx.get() != 4) {
-					SELECT_Fx = 4;
-				}
-			}
-			else
-			{
-			}
-		}
-		else if (name == ENABLE_Echotrace.getName() && bEnableGuiWorkflow)
-		{
-			if (ENABLE_Echotrace.get()) {
-				if (SELECT_Fx.get() != 5) {
-					SELECT_Fx = 5;
-				}
-			}
-			else
-			{
-			}
-		}
-#endif
-
-		//----
-
-		// all
-
-		else if (name == bAll.getName())
-		{
-			if (bAll.get()) {
-				bAll = false;
-
-				if (bSolo.get()) bSolo = false;
-
-				frag1.active = true;
-				frag2.active = true;
-				frag3.active = true;
-#ifdef USE_FX_DELAYS
-				frag4.active = true;
-				frag5.active = true;
-#endif
-			}
-		}
-
-		//-
-
-		// none
-
-		else if (name == bNone.getName())
-		{
-			if (bNone.get()) {
-				bNone = false;
-
-				if (bSolo.get()) bSolo = false;
-
-				frag1.active = false;
-				frag2.active = false;
-				frag3.active = false;
-#ifdef USE_FX_DELAYS
-				frag4.active = false;
-				frag5.active = false;
-#endif
-			}
-		}
-
-		//-
-
-		// reset
-
-		else if (name == bReset.getName())
-		{
-			if (bReset.get()) {
-				bReset = false;
-
-				// reset all fx
-				{
-					if (bSolo.get()) bSolo = false;
-
-					frag1.active = false;
-					frag1.low = 0;
-					frag1.high = 1;
-
-					frag2.active = false;
-					frag2.mix = 1;
-					frag2.thresholds[0] = 0;
-					frag2.thresholds[1] = 0.5f;
-					frag2.fade = 0.3f;
-					frag2.colors[0] = 0;
-					frag2.colors[1] = 128;
-					frag2.colors[2] = 255;
-
-					frag3.active = true;
-					frag3.hue = 0;
-					frag3.brightness = 0;
-					frag3.contrast = 1;
-					frag3.saturation = 1;
-
-#ifdef USE_FX_DELAYS
-					frag4.active = false;
-					frag4.feedback = 0;
-					frag4.blendmode = 0;
-
-					frag5.active = false;
-					frag5.gain = 0.7f;
-					frag5.threshold = 0.55f;
-					frag5.invert = false;
-					frag5.hardCutoff = false;
-#endif
-				}
-
-				//-
-
-				//TODO:
-				//reset only the selected fx
-//				switch (SELECT_Fx.get())
-//				{
-//				case 1:
-//					frag1.active = true;
-//					frag1.low = 0;
-//					frag1.high = 1;
-//					break;
-//
-//				case 2:
-//					frag2.active = true;
-//					frag2.mix = 1;
-//					frag2.thresholds[0] = 0;
-//					frag2.thresholds[1] = 0.5f;
-//					frag2.fade = 0.3f;
-//					frag2.colors[0] = 0;
-//					frag2.colors[1] = 128;
-//					frag2.colors[2] = 255;
-//					break;
-//
-//				case 3:
-//					frag3.active = true;
-//					frag3.hue = 0;
-//					frag3.brightness = 0;
-//					frag3.contrast = 1;
-//					frag3.saturation = 1;
-//					break;
-//
-//#ifdef USE_FX_DELAYS
-//				case 4:
-//					frag4.active = true;
-//					frag4.feedback = 0;
-//					frag4.blendmode = 0;
-//					break;
-//
-//				case 5:
-//					frag5.active = true;
-//					frag5.gain = 0.7f;
-//					frag5.threshold = 0.55f;
-//					frag5.invert = false;
-//					frag5.hardCutoff = false;
-//					break;
-//#endif
-//				}
-			}
-		}
-
-		//----
-
-		//TODO:
-		// Gui Workflow
-
-		//TODO:
-		// Trig to implement workflow collapse / expand groups not working...
-
-		/*
-		// Expand
-
-		else if (name == bExpand.getName())
-		{
-			if (bExpand.get())
-			{
-				bExpand = false;
-
-				bOpenFrag1 = true;
-				bOpenFrag2 = true;
-				bOpenFrag3 = true;
-#ifdef USE_FX_DELAYS
-				bOpenFrag4 = true;
-				bOpenFrag5 = true;
-				//bOpenFrag6 = true;
-#endif
-
-//#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-//				fgT0 = ImGuiTreeNodeFlags_DefaultOpen;
-//				fgT1 = fgT0;
-//				fgT2 = fgT0;
-//				fgT3 = fgT0;
-//#ifdef USE_FX_DELAYS
-//				fgT4 = fgT0;
-//				fgT5 = fgT0;
-//				//fgT6 = fgT0;
-//#endif
-//#endif
 			}
 		}
 
 		//--
 
-		// Collapse
+		bDISABLE_CALLBACKS = false;
 
-		else if (name == bCollapse.getName())
+		//TODO:
+		if (bEnableGuiWorkflow) refresh_GuiWorkflow();
+	}
+
+	//----
+
+	// Enabler Toggles
+	/*
+
+	else if (name == ENABLE_Monochrome.getName())
+	{
+		if (ENABLE_Monochrome.get() && bEnableGuiWorkflow) {
+			if (indexFx != 1) indexFx = 1;
+		}
+		else
 		{
-			if (bCollapse.get())
-			{
-				bCollapse = false;
+		}
+	}
+	else if (name == ENABLE_ThreeTones.getName() && bEnableGuiWorkflow)
+	{
+		if (ENABLE_ThreeTones.get()) {
+			if (indexFx != 2) indexFx = 2;
+		}
+		else
+		{
+		}
+	}
+	else if (name == ENABLE_HSB.getName() && bEnableGuiWorkflow)
+	{
+		if (ENABLE_HSB.get()) {
+			if (indexFx != 3) indexFx = 3;
+		}
+		else
+		{
+		}
+	}
 
-				bOpenFrag1 = false;
-				bOpenFrag2 = false;
-				bOpenFrag3 = false;
 #ifdef USE_FX_DELAYS
-				bOpenFrag4 = false;
-				bOpenFrag5 = false;
-				//bOpenFrag6 = false;
+
+	else if (name == ENABLE_Delay.getName() && bEnableGuiWorkflow)
+	{
+		if (ENABLE_Delay.get()) {
+			if (indexFx != 4) indexFx = 4;
+		}
+		else
+		{
+		}
+	}
+	else if (name == ENABLE_Echotrace.getName() && bEnableGuiWorkflow)
+	{
+		if (ENABLE_Echotrace.get()) {
+			if (indexFx != 5) indexFx = 5;
+		}
+		else
+		{
+		}
+	}
+
 #endif
 
-//#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-//				fgT0 = ImGuiTreeNodeFlags_CollapsingHeader;
-//				fgT1 = fgT0;
-//				fgT2 = fgT0;
-//				fgT3 = fgT0;
-//#ifdef USE_FX_DELAYS
-//				fgT4 = fgT0;
-//				fgT5 = fgT0;
-//				//fgT6 = fgT0;
-//#endif
-//#endif
+	*/
 
-				//--
+	//----
+
+	// all
+
+	else if (name == bAll.getName())
+	{
+		if (bAll.get()) {
+			bAll = false;
+
+			if (bSolo.get()) bSolo = false;
+
+			ENABLE_Monochrome = true;
+			ENABLE_ThreeTones = true;
+			ENABLE_HSB = true;
+
+#ifdef USE_FX_DELAYS
+			ENABLE_Delay = true;
+			ENABLE_Echotrace = true;
+#endif
+		}
+	}
+
+	//-
+
+	// none
+
+	else if (name == bNone.getName())
+	{
+		if (bNone.get()) {
+			bNone = false;
+
+			if (bSolo.get()) bSolo = false;
+
+			ENABLE_Monochrome = false;
+			ENABLE_ThreeTones = false;
+			ENABLE_HSB = false;
+
+#ifdef USE_FX_DELAYS
+			ENABLE_Delay = false;
+			ENABLE_Echotrace = false;
+#endif
+		}
+	}
+
+	//-
+
+	// reset
+
+	else if (name == bReset.getName())
+	{
+		if (bReset.get()) {
+			bReset = false;
+
+			doReset();
+		}
+	}
+
+	//--
+
+	// presets
+
+#ifdef USE_ofxPresetsManager
+
+	else if (name == bGui_Presets.getName())
+	{
+		presetsManager.setVisible_PresetClicker(bGui_Presets);
+	}
+
+#endif
+
+	//--
+
+	// enable keys
+
+	else if (name == bKeys.getName())
+	{
+
+#ifdef USE_ofxPresetsManager
+
+		presetsManager.setEnableKeys(bKeys);
+
+#endif
+	}
+
+	//--
+
+	// position gui
 
 #ifdef USE_ofxGui
-				// minimize
-				auto &g0 = gui.getGroup(params_Control.getName());
-				auto &g1 = g0.getGroup(params_Control.getName());
-				auto &gus = g1.getGroup(params_Session.getName());
-				auto &gfx = g1.getGroup(params_Preset.getName());
-				gus.minimize();
-				gfx.minimize();
-				gui.minimizeAll();
-#endif
-			}
-		}
-		*/
 
-		//--
-
-		// show presets
-
-#ifdef USE_ofxPresetsManager
-		else if (name == bGui_Presets.getName())
-		{
-			presetsManager.setVisible_PresetClicker(bGui_Presets);
-		}
-#endif
-		//--
-
-		// enable keys
-
-		else if (name == bKeys.getName())
-		{
-#ifdef USE_ofxPresetsManager
-			presetsManager.setEnableKeys(bKeys);
-#endif
-		}
-
-		//--
+	else if (name == position_Gui.getName())
+	{
+		gui.setPosition(position_Gui->x, position_Gui->y);
 	}
+
+#endif
 }
+
+//--
 
 // keys
 //--------------------------------------------------------------
-void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
+void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs& eventArgs)
 {
 	// disabler for all keys. (independent from bActive)
 	if (!bKeys) return;
 
-	const int &key = eventArgs.key;
+	const int& key = eventArgs.key;
 	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
 
 	// modifiers
@@ -919,10 +770,10 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 	bool debug = false;
 	if (debug)
 	{
-		ofLogNotice(__FUNCTION__) << "mod_COMMAND: " << (mod_COMMAND ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_CONTROL: " << (mod_CONTROL ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_ALT: " << (mod_ALT ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_SHIFT: " << (mod_SHIFT ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_COMMAND : " << (mod_COMMAND ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_CONTROL : " << (mod_CONTROL ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_ALT     : " << (mod_ALT ? "ON" : "OFF");
+		ofLogNotice(__FUNCTION__) << "mod_SHIFT   : " << (mod_SHIFT ? "ON" : "OFF");
 	}
 
 	//-
@@ -932,15 +783,15 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 		// Browse Fx selector
 		if (key == OF_KEY_UP)
 		{
-			if (SELECT_Fx.get() > 0) SELECT_Fx--;
+			if (indexFx.get() > 1) indexFx--;
 		}
 
 		else if (key == OF_KEY_DOWN)
 		{
 #ifndef USE_FX_DELAYS
-			if (SELECT_Fx.get() < 3) SELECT_Fx++;
+			if (indexFx.get() < 3) indexFx++;
 #else
-			if (SELECT_Fx.get() < 5) SELECT_Fx++;
+			if (indexFx.get() < 5) indexFx++;
 #endif
 		}
 
@@ -961,7 +812,7 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 		}
 
 		else if (key == 'E') {
-			bENABLE_Fx = !bENABLE_Fx;
+			bEnable_Fx = !bEnable_Fx;
 		}
 
 		else if (key == 'G') {
@@ -972,7 +823,7 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs &eventArgs)
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::begin() {
-	//if (bENABLE_Fx)
+	//if (bEnable_Fx)
 	{
 		fbo_FxChain.begin();
 		ofClear(0, 0, 0, 0);
@@ -981,7 +832,7 @@ void ofxSurfingFxChannel::begin() {
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::end() {
-	//if (bENABLE_Fx)
+	//if (bEnable_Fx)
 	{
 		fbo_FxChain.end();
 	}
@@ -990,7 +841,17 @@ void ofxSurfingFxChannel::end() {
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::update_FxChannel()
 {
-	if (bENABLE_Fx)
+	//TODO:
+	if (bFlagRefresh)
+	{
+		bFlagRefresh = false;
+
+		refresh_FxName();
+	}
+
+	//--
+
+	if (bEnable_Fx)
 	{
 		// fx
 		frag1.apply(fbo_FxChain);
@@ -1034,7 +895,7 @@ void ofxSurfingFxChannel::drawGui()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::draw()
 {
-	//if (bENABLE_Fx)
+	//if (bEnable_Fx)
 	{
 		update_FxChannel();
 
@@ -1059,11 +920,13 @@ void ofxSurfingFxChannel::drawImGui()
 	{
 		if (guiManager.beginWindow(bGui))
 		{
-			guiManager.Add(bENABLE_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
+			guiManager.Add(bEnable_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
 			guiManager.AddSpacing();
+
+			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+			
 			guiManager.Add(bGui_Edit, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 			guiManager.Add(bGui_User, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
 
 			if (!guiManager.bMinimize)
 			{
@@ -1108,10 +971,10 @@ void ofxSurfingFxChannel::drawImGui()
 
 			// Controls
 
-			if (!guiManager.bMinimize) guiManager.AddGroup(params_Subcontrol, ImGuiTreeNodeFlags_None);
+			if (!guiManager.bMinimize) guiManager.AddGroup(params_Preview, ImGuiTreeNodeFlags_None);
 
 			//// Enable Fx Toggles
-			//guiManager.AddGroup(params_Subcontrol2, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
+			//guiManager.AddGroup(params_Enablers, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
 
 			//-
 
@@ -1127,6 +990,8 @@ void ofxSurfingFxChannel::drawImGui()
 		}
 
 		//--
+
+		//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
 
 		if (guiManager.beginWindow(bGui_Edit))
 		{
@@ -1147,8 +1012,9 @@ void ofxSurfingFxChannel::drawImGui()
 			guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag3.active)
 				guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
-			guiManager.AddSpacingSeparated();
+
 #ifdef USE_FX_DELAYS	
+			guiManager.AddSpacingSeparated();
 			guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
 			if (!guiManager.bMinimize && frag4.active)
 				guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
@@ -1159,57 +1025,43 @@ void ofxSurfingFxChannel::drawImGui()
 				guiManager.AddGroup(frag5.parameters, fgT5, fgG5);
 #endif					
 
-			//					fgG1 = (frag1.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-			//					fgG2 = (frag2.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-			//					fgG3 = (frag3.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-			//#ifdef USE_FX_DELAYS
-			//					fgG4 = (frag4.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-			//					fgG5 = (frag5.active) ? OFX_IM_GROUP_DEFAULT : OFX_IM_GROUP_COLLAPSED;
-			//#endif
-
-			//					fgT1 = frag1.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-			//					fgT2 = frag2.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-			//					fgT3 = frag3.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-			//#ifdef USE_FX_DELAYS
-			//					fgT4 = frag4.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-			//					fgT5 = frag5.active ? ImGuiTreeNodeFlags_DefaultOpen : ImGuiTreeNodeFlags_CollapsingHeader;
-			//#endif
-
 			guiManager.endWindow();
 		}
 
 		//--
+
+		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
 
 		if (guiManager.beginWindow(bGui_User))
 		{
 			static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
 			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
 
-			if (frag1.active) {
+			if (ENABLE_Monochrome) {
 				guiManager.Add(frag1.low, style);
 				guiManager.Add(frag1.high, style);
 				//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
 			}
-			if (frag2.active) {
+			if (ENABLE_ThreeTones) {
 				guiManager.Add(frag2.mix, style);
 				guiManager.Add(frag2.thresholds[0], style);
 				guiManager.Add(frag2.thresholds[1], style);
 				guiManager.Add(frag2.fade, style);
 				guiManager.AddSpacing();
 			}
-			if (frag3.active) {
-				if(!frag1.active) guiManager.Add(frag3.hue, style);
+			if (ENABLE_HSB) {
+				if (!ENABLE_Monochrome) guiManager.Add(frag3.hue, style);
 				guiManager.Add(frag3.brightness, style);
 				guiManager.Add(frag3.contrast, style);
 				guiManager.AddSpacing();
 			}
 
 #ifdef USE_FX_DELAYS
-			if (frag4.active) {
+			if (ENABLE_Delay) {
 				guiManager.Add(frag4.feedback, style);
 				guiManager.AddSpacing();
 			}
-			if (frag5.active) {
+			if (ENABLE_Echotrace) {
 				guiManager.Add(frag5.gain, style);
 				guiManager.AddSpacing();
 			}
@@ -1231,57 +1083,49 @@ void ofxSurfingFxChannel::drawImGui()
 #endif
 
 //--------------------------------------------------------------
-void ofxSurfingFxChannel::refresh_Gui_Solos() {
-	if (!bSolo) return;
-
-	if (!frag1.active &&
-		!frag2.active &&
-		!frag3.active
-#ifdef USE_FX_DELAYS
-		&&
-		!frag4.active &&
-		!frag5.active
-#endif
-		)
-	{
-		bSolo = false;
-	}
-}
-
-//--------------------------------------------------------------
 void ofxSurfingFxChannel::exit()
 {
+	ofLogNotice(__FUNCTION__);
+
 #ifdef USE_ofxPresetsManager
 	presetsManager.exit();
 #endif
 
-	// callback
-	ofRemoveListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed_params_Control);
+	//--
+
+	// position gui
+
+#ifdef USE_ofxGui
+	position_Gui = glm::vec2(gui.getPosition());
+#endif
+
+	//--
 
 	// settings 
+
 #ifndef USE_ofxPresetsManager
 	ofxSurfingHelpers::saveGroup(params_Preset, path_GLOBAL_Folder + "/" + path_fileName_Preset);
 #endif
 
 	ofxSurfingHelpers::saveGroup(params_Session, path_GLOBAL_Folder + "/" + path_fileName_Session);
-
-	removeKeysListeners();
 }
 
 //--
+
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setupStyles() {
 
 	guiManager.clearStyles(); // Clear queued styles if there where previously added, We can do this and changes styles on runtime!
 
-	guiManager.AddStyle(SELECT_Fx, OFX_IM_HSLIDER_SMALL);
-	//guiManager.AddStyle(SELECT_Fx, OFX_IM_HSLIDER_MINI);//TODO: fails
+	guiManager.AddStyle(indexFx, OFX_IM_HSLIDER_SMALL);
+	//guiManager.AddStyle(indexFx, OFX_IM_HSLIDER_MINI);//TODO: fails
 
 	if (guiManager.bMinimize)//fails
 	{
-		//guiManager.AddStyle(SELECT_Fx, OFX_IM_HIDDEN, 1, false);//fails
-		//guiManager.AddStyle(SELECT_Fx_Name, OFX_IM_HIDDEN, 1 , false);
+		//guiManager.AddStyle(indexFx, OFX_IM_HIDDEN, 1, false);//fails
+		//guiManager.AddStyle(indexFx_Name, OFX_IM_HIDDEN, 1 , false);
 		guiManager.AddStyle(bSolo, OFX_IM_HIDDEN, 2, true);
 		guiManager.AddStyle(bReset, OFX_IM_HIDDEN, 2, false);//spacing at end
 		guiManager.AddStyle(bAll, OFX_IM_HIDDEN, 2, true);
@@ -1289,8 +1133,8 @@ void ofxSurfingFxChannel::setupStyles() {
 	}
 	else
 	{
-		//guiManager.AddStyle(SELECT_Fx, OFX_IM_DEFAULT);
-		//guiManager.AddStyle(SELECT_Fx_Name, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(indexFx, OFX_IM_DEFAULT);
+		//guiManager.AddStyle(indexFx_Name, OFX_IM_DEFAULT);
 		guiManager.AddStyle(bSolo, OFX_IM_TOGGLE_SMALL_BORDER_BLINK, 2, true);
 		guiManager.AddStyle(bReset, OFX_IM_TOGGLE_SMALL, 2, false);//spacing at end
 		guiManager.AddStyle(bAll, OFX_IM_TOGGLE_SMALL, 2, true);
@@ -1319,4 +1163,110 @@ void ofxSurfingFxChannel::setupStyles() {
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::ClearStyles() {
 	guiManager.clearStyles(); // TODO: -> call from beginWindow/group
+}
+
+#endif
+
+//--
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::refresh_FxName()
+{
+	switch (indexFx.get())
+	{
+	case 1: indexFx_Name = (ofToString("MONOCHROME")); break;
+	case 2: indexFx_Name = (ofToString("THREETONES")); break;
+	case 3: indexFx_Name = (ofToString("HSB")); break;
+#ifdef USE_FX_DELAYS			  
+	case 4: indexFx_Name = (ofToString("DELAY")); break;
+	case 5: indexFx_Name = (ofToString("ECHOTRACE")); break;
+#endif
+	default: indexFx_Name = (ofToString(" ")); break;
+	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::refresh_GuiMinimize() {
+
+#ifdef USE_ofxGui
+
+	auto& g0 = gui.getGroup(params_Control.getName());
+
+	auto& g1 = g0.getGroup(params_Preview.getName());
+	auto& g2 = g0.getGroup(params_Enablers.getName());
+	auto& g3 = g0.getGroup(params_Preset.getName());
+
+	auto& gf1 = g3.getGroup(frag1.parameters.getName());
+	auto& gf2 = g3.getGroup(frag2.parameters.getName());
+	auto& gf3 = g3.getGroup(frag3.parameters.getName());
+#ifdef USE_FX_DELAYS
+	auto& gf4 = g3.getGroup(frag4.parameters.getName());
+	auto& gf5 = g3.getGroup(frag5.parameters.getName());
+#endif
+
+	g1.minimize();
+	g2.minimize();
+	g3.minimize();
+
+	gf1.minimize();
+	gf2.minimize();
+	gf3.minimize();
+#ifdef USE_FX_DELAYS
+	gf4.minimize();
+	gf5.minimize();
+#endif
+
+	//--
+
+	refresh_GuiWorkflow();
+
+#endif
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::refresh_GuiWorkflow() {
+
+#ifdef USE_ofxGui
+
+	auto& g0 = gui.getGroup(params_Control.getName());
+	auto& g3 = g0.getGroup(params_Preset.getName());
+
+	auto& gf1 = g3.getGroup(frag1.parameters.getName());
+	auto& gf2 = g3.getGroup(frag2.parameters.getName());
+	auto& gf3 = g3.getGroup(frag3.parameters.getName());
+#ifdef USE_FX_DELAYS
+	auto& gf4 = g3.getGroup(frag4.parameters.getName());
+	auto& gf5 = g3.getGroup(frag5.parameters.getName());
+#endif
+
+	gf1.minimize();
+	gf2.minimize();
+	gf3.minimize();
+#ifdef USE_FX_DELAYS
+	gf4.minimize();
+	gf5.minimize();
+#endif
+
+	if (bSolo)
+	{
+		if (ENABLE_Monochrome) gf1.maximize();
+		if (ENABLE_ThreeTones) gf2.maximize();
+		if (ENABLE_HSB) gf3.maximize();
+#ifdef USE_FX_DELAYS
+		if (ENABLE_Delay) gf4.maximize();
+		if (ENABLE_Echotrace) gf5.maximize();
+#endif
+	}
+	else
+	{
+		if (indexFx == 1) gf1.maximize();
+		else if (indexFx == 2) gf2.maximize();
+		else if (indexFx == 3) gf3.maximize();
+#ifdef USE_FX_DELAYS
+		else if (indexFx == 4) gf4.maximize();
+		else if (indexFx == 5) gf5.maximize();
+#endif
+	}
+
+#endif
 }
