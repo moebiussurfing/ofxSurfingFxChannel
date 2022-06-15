@@ -15,34 +15,42 @@
 	+ fix auto populate more presets always..
 	+ fix groups GUI workflow expand/collapse
 	+ add one extra Fx: GPU Lut?
+	+ presets smooth don't works here.
 
 */
 
 //----
 
 
-// Optional:
+// OPTIONAL:
 
-// To include some extra fx's: 
+//-
+
+// 1. To include some extra fx's: 
+
 // delay and echo trace
 //#define USE_FX_DELAYS	
 
 //-
 
-//#define USE_ofxGui // Simpler gui could be activated to remove ImGui dependency.
+// 2. Pick a Gui
+
+//#define USE_ofxGui // Simpler GUI could be activated to remove ImGui dependency.
 #define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
 
 //-
 
-// Enable a Presets Manager:
+// 3. Enable a Presets Manager:
 
 // Option 1. 
 // Simpler and recommended!
-//#define USE_ofxSurfingPresets 
+#define USE_ofxSurfingPresets 
 
 // Option 2. 
 // A bit complex alternative.	
 //#define USE_ofxPresetsManager
+
+//-
 
 
 //----

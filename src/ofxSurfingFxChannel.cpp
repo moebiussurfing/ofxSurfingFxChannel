@@ -373,7 +373,6 @@ void ofxSurfingFxChannel::setup_Params()
 	presetsManager.setPlayerPlay(false);
 	presetsManager.setMaxPresetsAmountPerRowClickerFloat(2);
 	presetsManager.setMaxPresetsAmountPerRowClickerMini(2);
-
 	presetsManager.bKeys.makeReferenceTo(bKeys);//link toggles
 #endif
 

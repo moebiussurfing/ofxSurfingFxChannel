@@ -30,9 +30,6 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	ofSetBackgroundColor(0);
-
-	//--
 
 	channelFx.draw();
 	channelFx.drawGui();
@@ -141,7 +138,6 @@ void ofApp::drawScene() {
 //--------------------------------------------------------------
 void ofApp::draw3D() {
 	ofEnableDepthTest();
-	//ofEnableAlphaBlending();
 
 	ofPushStyle();
 
@@ -154,11 +150,9 @@ void ofApp::draw3D() {
 
 		//-
 
-		//prims
+		// prims
 		ofFill();
 		ofSetColor(0, 64);
-		//ofSetColor(255, 64);
-		//ofSetColor(0);
 		if (_prim == 0) {
 			box.drawFaces();
 		}
@@ -171,8 +165,6 @@ void ofApp::draw3D() {
 		// wire prims
 		ofNoFill();
 		ofSetColor(255, 200);
-		//ofSetColor(0, 200);
-		//ofSetColor(255);
 		ofSetLineWidth(2.);
 		if (_prim == 0) {
 			box.drawWireframe();
@@ -185,7 +177,6 @@ void ofApp::draw3D() {
 
 	ofPopStyle();
 
-	//ofDisableAlphaBlending();
 	ofDisableDepthTest();
 }
 

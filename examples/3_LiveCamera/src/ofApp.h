@@ -35,6 +35,7 @@ class ofApp : public ofBaseApp
 {
 
 public:
+
 	void setup();
 	void update();
 	void draw();
@@ -43,6 +44,7 @@ public:
 	void windowResized(int w, int h);
 
 	// draw
+
 	void setupScene();
 	void drawScene();
 
@@ -51,6 +53,7 @@ public:
 	//--
 
 	// Webcam
+
 	ofVideoGrabber vidGrabber;
 	void setupWebcamDevice();
 	void drawInfo();
@@ -58,15 +61,19 @@ public:
 	void drawWebcam();
 	ofParameter <std::string> deviceName{ "WEBCAM_DEVICE_NAME", "" };
 	int _deviceIndex;
+	ofTrueTypeFont font;
 
+	//--
+	 
 	// 3D scene
+
 	void draw3D();
 	ofEasyCam cam;
 	int _prim = 1;
 	ofBoxPrimitive box;
 	ofConePrimitive cone;
 
-	ofTrueTypeFont font;
+	//--
 
 #ifdef USE_ofxWindowApp
 	ofxWindowApp windowApp;
