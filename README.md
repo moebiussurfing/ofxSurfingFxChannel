@@ -15,7 +15,7 @@ Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](
 
 ![](/examples/1_BasicNoPresets/Capture.PNG)
 
-[Screenshots](https://github.com/moebiussurfing/ofxSurfingFxChannel/blob/master/examples/README.md)  
+[Examples Screenshots](https://github.com/moebiussurfing/ofxSurfingFxChannel/blob/master/examples/README.md)  
 
 ## Features
 - Channel Strip to image processing with some common Effects.
