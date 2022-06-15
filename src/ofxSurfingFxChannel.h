@@ -44,7 +44,7 @@
 
 // Option 1. 
 // Simpler and recommended!
-#define USE_ofxSurfingPresets 
+//#define USE_ofxSurfingPresets 
 
 // Option 2. 
 // A bit complex alternative.	
