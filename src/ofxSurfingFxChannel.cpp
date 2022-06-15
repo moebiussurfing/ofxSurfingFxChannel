@@ -923,7 +923,7 @@ void ofxSurfingFxChannel::drawImGui()
 	{
 		if (guiManager.beginWindow(bGui))
 		{
-			guiManager.Add(bEnable_Fx, OFX_IM_TOGGLE_BIG_XXL_BORDER);
+			guiManager.Add(bEnable_Fx, OFX_IM_TOGGLE_BIG_BORDER);
 			guiManager.AddSpacing();
 
 			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED);
@@ -994,6 +994,8 @@ void ofxSurfingFxChannel::drawImGui()
 
 		//--
 
+		// Edit
+
 		//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
 
 		if (guiManager.beginWindow(bGui_Edit))
@@ -1033,40 +1035,62 @@ void ofxSurfingFxChannel::drawImGui()
 
 		//--
 
+		// User
+
+		if (bGui_Edit) {
+			ImVec2 p;
+			ImGuiContext* GImGui = ImGui::GetCurrentContext();
+			ImGuiContext& g = *GImGui;
+			for (ImGuiWindow* window : g.WindowsFocusOrder)
+			{
+				if (window->WasActive && window->Name== bGui_Edit.getName())
+				{
+					p = window->Pos + ImVec2(window->Size.x, 0);
+					break;
+				}
+			}
+			ImGuiCond cond = ImGuiCond_Always;
+			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
+		}
+
 		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
 
 		if (guiManager.beginWindow(bGui_User))
 		{
-			static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
-			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
+			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
+			static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
 
 			if (ENABLE_Monochrome) {
 				guiManager.Add(frag1.low, style);
 				guiManager.Add(frag1.high, style);
 				//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
+				guiManager.AddSeparator();
+				//guiManager.AddSpacing();
 			}
 			if (ENABLE_ThreeTones) {
 				guiManager.Add(frag2.mix, style);
 				guiManager.Add(frag2.thresholds[0], style);
 				guiManager.Add(frag2.thresholds[1], style);
 				guiManager.Add(frag2.fade, style);
-				guiManager.AddSpacing();
+				guiManager.AddSpacingSeparated();
+				//guiManager.AddSpacing();
 			}
 			if (ENABLE_HSB) {
 				if (!ENABLE_Monochrome) guiManager.Add(frag3.hue, style);
 				guiManager.Add(frag3.brightness, style);
 				guiManager.Add(frag3.contrast, style);
-				guiManager.AddSpacing();
+				guiManager.AddSpacingSeparated();
+				//guiManager.AddSpacing();
 			}
 
 #ifdef USE_FX_DELAYS
 			if (ENABLE_Delay) {
 				guiManager.Add(frag4.feedback, style);
-				guiManager.AddSpacing();
+				guiManager.AddSpacingSeparated();
+				//guiManager.AddSpacing();
 			}
 			if (ENABLE_Echotrace) {
 				guiManager.Add(frag5.gain, style);
-				guiManager.AddSpacing();
 			}
 #endif
 

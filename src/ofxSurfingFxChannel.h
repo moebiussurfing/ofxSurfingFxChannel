@@ -13,8 +13,8 @@
 	TODO:
 
 	+ fix auto populate more presets always..
-	+ fix groups GUI workflow expand/collapse
-	+ add one extra Fx: GPU Lut?
+	+ fix groups GUI workflow expand/collapse on ImGui.
+	+ add one extra FX: GPU LUT? Overlay?
 	+ presets smooth don't works here.
 
 */
@@ -26,10 +26,10 @@
 
 //-
 
-// 1. To include some extra fx's: 
+// 1. To include some extra FX's: 
 
 // delay and echo trace
-//#define USE_FX_DELAYS	
+#define USE_FX_DELAYS	
 
 //-
 
