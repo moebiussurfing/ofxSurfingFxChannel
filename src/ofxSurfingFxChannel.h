@@ -166,27 +166,6 @@ private:
 
 	//--
 
-public:
-
-	//--------------------------------------------------------------
-	ofParameterGroup& getParameters_Preview() { // params previews
-		return params_Preview;
-	}
-	//--------------------------------------------------------------
-	ofParameterGroup& getParameters_Enablers() { // enablers params
-		return params_Enablers;
-	}
-	//--------------------------------------------------------------
-	ofParameterGroup& getParameters_Preset() { // to use as preset
-		return params_Preset;
-	}
-	//--------------------------------------------------------------
-	ofParameterGroup& getParameters_Control() { // all the controls
-		return params_Control;
-	}
-
-	//--
-
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 
 private:
@@ -305,6 +284,29 @@ public:
 	ofParameterGroup params_Enablers;
 	ofParameterGroup params_Preset;
 	ofParameterGroup params_Control;
+
+	//--
+
+public:
+
+	//--------------------------------------------------------------
+	ofParameterGroup& getParameters_Preview() { // params previews
+		return params_Preview;
+	}
+	//--------------------------------------------------------------
+	ofParameterGroup& getParameters_Enablers() { // enablers params
+		return params_Enablers;
+	}
+	//--------------------------------------------------------------
+	ofParameterGroup& getParameters_Preset() { // to use as preset
+		return params_Preset;
+	}
+	//--------------------------------------------------------------
+	ofParameterGroup& getParameters_Control() { // all the controls
+		return params_Control;
+	}
+
+	//--
 
 private:
 

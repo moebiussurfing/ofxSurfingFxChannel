@@ -14,7 +14,7 @@ ofxSurfingFxChannel::ofxSurfingFxChannel()
 #endif
 
 	addKeysListeners();
-};
+}
 
 //--------------------------------------------------------------
 ofxSurfingFxChannel::~ofxSurfingFxChannel()
@@ -25,7 +25,7 @@ ofxSurfingFxChannel::~ofxSurfingFxChannel()
 	removeKeysListeners();
 
 	exit();
-};
+}
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::doReset()
