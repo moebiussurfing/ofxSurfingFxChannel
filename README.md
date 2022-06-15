@@ -16,10 +16,10 @@ Powered by [ofxDotFrag](https://github.com/npisanti/ofxDotFrag) from [npisanti](
 [Screenshots](https://github.com/moebiussurfing/ofxSurfingFxChannel/blob/master/examples/README.md)  
 
 ## Features
-- Channel Strip to image processing with common Effects.
+- Channel Strip to image processing with some common Effects.
+- Implemented GUI with **ofxImGui** or **ofxGui**.
 - Auto Store/Recall Settings.
 - Optional Presets Manager.
-- Implemented GUI with **ofxImGui** or **ofxGui**.
 
 ## Usage
 Check examples.  
@@ -27,6 +27,7 @@ Check examples.
 ### ofApp.h
 ```.cpp
 #include "ofxSurfingFxChannel.h"
+
 ofxSurfingFxChannel channelFx;
 ```
 
@@ -41,15 +42,15 @@ ofApp::update()
 {
 	channelFx.begin();
 	{
-		// draw here!
+		/* draw here! */
 	}
 	channelFx.end();
 }
 
 ofApp::draw()
 {
-	channelFx.draw();
-	channelFx.drawGui();
+	channelFx.draw(); // image
+	channelFx.drawGui(); // gui
 }
 ```
 
@@ -73,7 +74,7 @@ No need to add them manually with the **OF PROJECT GENERATOR**:
   <summary>Tested Systems</summary>
   <p>
 
-  - **Windows 10** / **VS 2017** / **OF ~0.11**
+  - **Windows 10** / **VS 2017-2022** / **OF ~0.11-0.12**
   </p>
 </details>
 
@@ -86,8 +87,7 @@ An addon by **@moebiusSurfing**
 <a href="mailto:moebiussurfing@gmail.com" target="_blank">Email</a> |
 <a href="https://twitter.com/moebiusSurfing/" rel="nofollow">Twitter</a> | 
 <a href="https://www.youtube.com/moebiusSurfing" rel="nofollow">YouTube</a> | 
-<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> | 
-<a href="https://github.com/moebiussurfing" target="_blank">GitHub</a> 
+<a href="https://www.instagram.com/moebiusSurfing/" rel="nofollow">Instagram</a> 
 </p>
 
 ### License
