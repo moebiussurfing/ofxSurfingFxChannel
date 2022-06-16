@@ -198,6 +198,13 @@ void ofxSurfingFxChannel::startup()
 	// Refresh Gui workflow
 
 	refresh_GuiMinimize();
+
+	//--
+	 
+	//TODO:
+	//bug crashing ofx SurfingFxPost
+	pg.setName("fxparams");
+	pg.add(indexFx);
 }
 
 //--------------------------------------------------------------
@@ -324,12 +331,6 @@ void ofxSurfingFxChannel::setup_Params()
 
 	//--
 
-	// Callbacks
-
-	ofAddListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed);
-
-	//--
-
 	// Presets Params
 
 	params_Preset.setName("PRESET");
@@ -389,7 +390,7 @@ void ofxSurfingFxChannel::setup_Params()
 	params_Session.add(bSolo);
 
 #ifndef USE_ofxGui
-	params_Session.add(bGui_Edit);
+	params_Session.add(bGui_Controls);
 #endif
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
@@ -411,6 +412,12 @@ void ofxSurfingFxChannel::setup_Params()
 	setup_PresetsManager();
 
 #endif
+
+	//--
+
+	// Callbacks
+
+	ofAddListener(params_Control.parameterChangedE(), this, &ofxSurfingFxChannel::Changed);
 
 }
 
@@ -488,28 +495,17 @@ void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 
 		//--
 
-		{
-			// set the name for selected
-			bFlagRefresh = true;
-
-			//			switch (indexFx.get())
-			//			{
-			//			case 1: indexFx_Name.setWithoutEventNotifications("MONOCHROME"); break;
-			//			case 2: indexFx_Name.setWithoutEventNotifications("THREETONES"); break;
-			//			case 3: indexFx_Name.setWithoutEventNotifications("HSB"); break;
-			//#ifdef USE_FX_DELAYS
-			//			case 4: indexFx_Name.setWithoutEventNotifications("DELAY"); break;
-			//			case 5: indexFx_Name.setWithoutEventNotifications("ECHOTRACE"); break;
-			//#endif
-			//			default: indexFx_Name.setWithoutEventNotifications(" "); break;
-			//			}
-		}
+		//TODO:
+		// workaround: to avoid feedback callbacks crashes..
+		// set the name for selected.
+		// set the name on next frame update!
+		bFlagRefresh = true;
 
 		//--
 
-		bDISABLE_CALLBACKS = false;
-
 		if (bEnableGuiWorkflow) refresh_GuiWorkflow();
+
+		bDISABLE_CALLBACKS = false;
 	}
 
 	//--
@@ -522,7 +518,7 @@ void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 	{
 		setupStyles();
 
-		if (bSolo) bSolo = false;
+		//if (bSolo) bSolo = false;
 	}
 
 #endif
@@ -599,7 +595,7 @@ void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 	//----
 
 	// Enabler Toggles
-	/*
+
 
 	else if (name == ENABLE_Monochrome.getName())
 	{
@@ -652,7 +648,7 @@ void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 
 #endif
 
-	*/
+
 
 	//----
 
@@ -916,187 +912,15 @@ void ofxSurfingFxChannel::draw()
 }
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::drawImGui()
 {
 	guiManager.begin(); // global begin
 	{
-		if (guiManager.beginWindow(bGui))
-		{
-			guiManager.Add(bEnable_Fx, OFX_IM_TOGGLE_BIG_BORDER);
-			guiManager.AddSpacing();
-
-			guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED);
-			
-			guiManager.Add(bGui_Edit, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-			guiManager.Add(bGui_User, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-
-			if (!guiManager.bMinimize)
-			{
-				guiManager.Add(bKeys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
-				////TODO:
-				//// trig to implement workflow collapse / expand groups not working...
-				//////guiManager.Add(bCollapse, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, true);
-				//////guiManager.Add(bExpand, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, false);
-				////TODO:
-				//ImGui::Spacing();
-				//guiManager.Add(bCollapse, OFX_IM_BUTTON_SMALL, 2, true);
-				//guiManager.Add(bExpand, OFX_IM_BUTTON_SMALL, 2, false);
-			}
-
-			guiManager.AddSpacing();
-
-			//--
-
-#ifdef USE_ofxSurfingPresets
-			if (!guiManager.bMinimize)
-			{
-				guiManager.AddSpacingSeparated();
-
-				guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-				if (presetsManager.bGui_Global)
-				{
-					guiManager.Indent();
-					//guiManager.Add(presetsManager.bGui_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
-					presetsManager.draw_ImGui_ClickerSimple(false, false);
-					guiManager.Unindent();
-				}
-
-				guiManager.AddSpacingSeparated();
-			}
-#endif
-			//--
-
-			ImGui::Spacing();
-
-			//-
-
-			// Controls
-
-			if (!guiManager.bMinimize) guiManager.AddGroup(params_Preview, ImGuiTreeNodeFlags_None);
-
-			//// Enable Fx Toggles
-			//guiManager.AddGroup(params_Enablers, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
-
-			//-
-
-#ifdef USE_ofxPresetsManager
-			if (!guiManager.bMinimize)
-			{
-				AddSpacingSeparated();
-				guiManager.Add(bGui_Presets, OFX_IM_TOGGLE_BIG);
-				ImGui::Spacing();
-			}
-#endif
-			guiManager.endWindow();
-		}
-
-		//--
-
-		// Edit
-
-		//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
-
-		if (guiManager.beginWindow(bGui_Edit))
-		{
-			//TODO:
-			//fold expand/collapse
-			//https://github.com/ocornut/imgui/issues/1131
-
-			guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
-			if (!guiManager.bMinimize && frag1.active)
-				guiManager.AddGroup(frag1.parameters, fgT1, fgG1);
-			guiManager.AddSpacingSeparated();
-
-			guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
-			if (!guiManager.bMinimize && frag2.active)
-				guiManager.AddGroup(frag2.parameters, fgT2, fgG2);
-			guiManager.AddSpacingSeparated();
-
-			guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
-			if (!guiManager.bMinimize && frag3.active)
-				guiManager.AddGroup(frag3.parameters, fgT3, fgG3);
-
-#ifdef USE_FX_DELAYS	
-			guiManager.AddSpacingSeparated();
-			guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
-			if (!guiManager.bMinimize && frag4.active)
-				guiManager.AddGroup(frag4.parameters, fgT4, fgG4);
-			guiManager.AddSpacingSeparated();
-
-			guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
-			if (!guiManager.bMinimize && frag5.active)
-				guiManager.AddGroup(frag5.parameters, fgT5, fgG5);
-#endif					
-
-			guiManager.endWindow();
-		}
-
-		//--
-
-		// User
-
-		if (bGui_Edit) {
-			ImVec2 p;
-			ImGuiContext* GImGui = ImGui::GetCurrentContext();
-			ImGuiContext& g = *GImGui;
-			for (ImGuiWindow* window : g.WindowsFocusOrder)
-			{
-				if (window->WasActive && window->Name== bGui_Edit.getName())
-				{
-					p = window->Pos + ImVec2(window->Size.x, 0);
-					break;
-				}
-			}
-			ImGuiCond cond = ImGuiCond_Always;
-			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
-		}
-
-		IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
-
-		if (guiManager.beginWindow(bGui_User))
-		{
-			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
-			static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
-
-			if (ENABLE_Monochrome) {
-				guiManager.Add(frag1.low, style);
-				guiManager.Add(frag1.high, style);
-				//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
-				guiManager.AddSeparator();
-				//guiManager.AddSpacing();
-			}
-			if (ENABLE_ThreeTones) {
-				guiManager.Add(frag2.mix, style);
-				guiManager.Add(frag2.thresholds[0], style);
-				guiManager.Add(frag2.thresholds[1], style);
-				guiManager.Add(frag2.fade, style);
-				guiManager.AddSpacingSeparated();
-				//guiManager.AddSpacing();
-			}
-			if (ENABLE_HSB) {
-				if (!ENABLE_Monochrome) guiManager.Add(frag3.hue, style);
-				guiManager.Add(frag3.brightness, style);
-				guiManager.Add(frag3.contrast, style);
-				guiManager.AddSpacingSeparated();
-				//guiManager.AddSpacing();
-			}
-
-#ifdef USE_FX_DELAYS
-			if (ENABLE_Delay) {
-				guiManager.Add(frag4.feedback, style);
-				guiManager.AddSpacingSeparated();
-				//guiManager.AddSpacing();
-			}
-			if (ENABLE_Echotrace) {
-				guiManager.Add(frag5.gain, style);
-			}
-#endif
-
-			guiManager.endWindow();
-		}
-
+		drawImGuiMain();
+		drawImGuiControls();
+		drawImGuiUsers();
 	}
 	guiManager.end(); // global end
 
@@ -1107,6 +931,201 @@ void ofxSurfingFxChannel::drawImGui()
 #endif
 
 }
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::drawImGuiMain()
+{
+	if (guiManager.beginWindow(bGui))
+	{
+		guiManager.Add(bEnable_Fx, OFX_IM_TOGGLE_BIG_BORDER);
+		guiManager.AddSpacing();
+
+		guiManager.Add(guiManager.bMinimize, OFX_IM_TOGGLE_BUTTON_ROUNDED);
+
+		guiManager.Add(bGui_Controls, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+		guiManager.Add(bGui_User, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+
+		if (!guiManager.bMinimize)
+		{
+			guiManager.Add(bKeys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
+
+			////TODO:
+			//// trig to implement workflow collapse / expand groups not working...
+			//////guiManager.Add(bCollapse, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, true);
+			//////guiManager.Add(bExpand, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL, 2, false);
+			////TODO:
+			//ImGui::Spacing();
+			//guiManager.Add(bCollapse, OFX_IM_BUTTON_SMALL, 2, true);
+			//guiManager.Add(bExpand, OFX_IM_BUTTON_SMALL, 2, false);
+		}
+
+		guiManager.AddSpacing();
+
+		//--
+
+#ifdef USE_ofxSurfingPresets
+		if (!guiManager.bMinimize)
+		{
+			guiManager.AddSpacingSeparated();
+
+			guiManager.Add(presetsManager.bGui_Global, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+			if (presetsManager.bGui_Global)
+			{
+				guiManager.Indent();
+				//guiManager.Add(presetsManager.bGui_Player, OFX_IM_TOGGLE_BUTTON_ROUNDED_MEDIUM);
+				presetsManager.draw_ImGui_ClickerSimple(false, false);
+				guiManager.Unindent();
+			}
+
+			guiManager.AddSpacingSeparated();
+		}
+#endif
+		//--
+
+		ImGui::Spacing();
+
+		//-
+
+		// Controls
+
+		if (!guiManager.bMinimize) guiManager.AddGroup(params_Preview, ImGuiTreeNodeFlags_None);
+
+		//// Enable Fx Toggles
+		//guiManager.AddGroup(params_Enablers, ImGuiTreeNodeFlags_None, OFX_IM_GROUP_COLLAPSED);
+
+		//-
+
+#ifdef USE_ofxPresetsManager
+		if (!guiManager.bMinimize)
+		{
+			AddSpacingSeparated();
+			guiManager.Add(bGui_Presets, OFX_IM_TOGGLE_BIG);
+			ImGui::Spacing();
+		}
+#endif
+		guiManager.endWindow();
+	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::drawImGuiUsers()
+{
+	if (bGui_Controls) {
+		ImVec2 p;
+		ImGuiContext* GImGui = ImGui::GetCurrentContext();
+		ImGuiContext& g = *GImGui;
+		for (ImGuiWindow* window : g.WindowsFocusOrder)
+		{
+			if (window->WasActive && window->Name == bGui_Controls.getName())
+			{
+				p = window->Pos + ImVec2(window->Size.x, 0);
+				break;
+			}
+		}
+		ImGuiCond cond = ImGuiCond_Always;
+		ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
+	}
+
+	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
+
+		if (guiManager.beginWindow(bGui_User))
+		{
+			static SurfingImGuiTypes style = OFX_IM_HSLIDER_MINI;
+			//static SurfingImGuiTypes style = OFX_IM_HSLIDER_SMALL;
+
+			if (ENABLE_Monochrome) {
+				guiManager.Add(frag1.low, style);
+				guiManager.Add(frag1.high, style);
+				//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
+			}
+			if (ENABLE_ThreeTones) {
+				if (ENABLE_Monochrome) guiManager.AddSeparator();
+				guiManager.Add(frag2.mix, style);
+				guiManager.Add(frag2.thresholds[0], style);
+				guiManager.Add(frag2.thresholds[1], style);
+				guiManager.Add(frag2.fade, style);
+			}
+			if (ENABLE_HSB) {
+				if (ENABLE_Monochrome || ENABLE_ThreeTones) guiManager.AddSpacingSeparated();
+				if (!ENABLE_Monochrome) guiManager.Add(frag3.hue, style);
+				guiManager.Add(frag3.brightness, style);
+				guiManager.Add(frag3.contrast, style);
+			}
+
+#ifdef USE_FX_DELAYS
+			if (ENABLE_Delay) {
+				if (ENABLE_Monochrome || ENABLE_ThreeTones || ENABLE_Delay)
+					if (ENABLE_Echotrace) guiManager.AddSpacingSeparated();
+				guiManager.Add(frag4.feedback, style);
+			}
+			if (ENABLE_Echotrace) {
+				guiManager.AddSpacingSeparated();
+				guiManager.Add(frag5.gain, style);
+			}
+#endif
+
+			guiManager.endWindow();
+		}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::drawImGuiControls()
+{
+	if (bGui)
+	{
+		ImVec2 p;
+		ImGuiContext* GImGui = ImGui::GetCurrentContext();
+		ImGuiContext& g = *GImGui;
+		for (ImGuiWindow* window : g.WindowsFocusOrder)
+		{
+			if (window->WasActive && window->Name == bGui.getName())
+			{
+				p = window->Pos + ImVec2(window->Size.x, 0);
+				break;
+			}
+		}
+		ImGuiCond cond = ImGuiCond_Always;
+		ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
+	}
+
+	//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
+
+	if (guiManager.beginWindow(bGui_Controls))
+	{
+		guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
+		if (!guiManager.bMinimize && frag1.active) guiManager.AddGroup(frag1.parameters, fgT1, fg, cond);
+
+		guiManager.AddSpacingSeparated();
+
+		guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
+		if (!guiManager.bMinimize && frag2.active) guiManager.AddGroup(frag2.parameters, fgT2, fg, cond);
+
+		guiManager.AddSpacingSeparated();
+
+		guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
+		if (!guiManager.bMinimize && frag3.active) guiManager.AddGroup(frag3.parameters, fgT3, fg, cond);
+
+
+#ifdef USE_FX_DELAYS	
+		guiManager.AddSpacingSeparated();
+
+		guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
+		if (!guiManager.bMinimize && frag4.active) guiManager.AddGroup(frag4.parameters, fgT4, fg, cond);
+
+		guiManager.AddSpacingSeparated();
+
+		guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
+		if (!guiManager.bMinimize && frag5.active) guiManager.AddGroup(frag5.parameters, fgT5, fg, cond);
+#endif					
+
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+		if (cond == ImGuiCond_Always) cond = ImGuiCond_Appearing;
+#endif					
+
+		guiManager.endWindow();
+	}
+}
+
 #endif
 
 //--------------------------------------------------------------
@@ -1253,6 +1272,34 @@ void ofxSurfingFxChannel::refresh_GuiMinimize() {
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::refresh_GuiWorkflow() {
 
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+
+	//TODO:
+	// fold expand/collapse
+
+	// all closed
+	fgT1 = fgT2 = fgT3 = fgT4 = fgT5 = fgT6 = ImGuiTreeNodeFlags_None;
+
+	// open selected
+	switch (indexFx.get())
+	{
+	case 1: fgT1 = ImGuiTreeNodeFlags_DefaultOpen; break;
+	case 2: fgT2 = ImGuiTreeNodeFlags_DefaultOpen; break;
+	case 3: fgT3 = ImGuiTreeNodeFlags_DefaultOpen; break;
+
+#ifdef USE_FX_DELAYS
+	case 4: fgT4 = ImGuiTreeNodeFlags_DefaultOpen; break;
+	case 54: fgT5 = ImGuiTreeNodeFlags_DefaultOpen; break;
+#endif
+
+	}
+
+	cond = ImGuiCond_Always;
+
+#endif
+
+	//--
+
 #ifdef USE_ofxGui
 
 	auto& g0 = gui.getGroup(params_Control.getName());
@@ -1296,4 +1343,5 @@ void ofxSurfingFxChannel::refresh_GuiWorkflow() {
 	}
 
 #endif
+
 }

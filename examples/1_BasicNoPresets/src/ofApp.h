@@ -5,18 +5,19 @@
 
 // NOTE ABOUT THIS EXAMPLE:
 //
-// to run this example out-of-the-box you must disable the presets manager addon
-// commenting this line on ofxSurfingFxChannel.h 
-//#define INCLUDE_ofxPresetsManager // presets manager
+// To run this example out-of-the-box you must disable the presets manager add-on
+// commenting this line on ofxSurfingFxChannel.h: 
+// //#define INCLUDE_ofxPresetsManager
 
 
 #include "ofxSurfingFxChannel.h"
 
 #include "ofxWindowApp.h" //-> not required
 
-class ofApp : public ofBaseApp{
-
+class ofApp : public ofBaseApp
+{
 	public:
+
 		void setup();
 		void update();
 		void draw();

@@ -17,6 +17,12 @@
 	+ add one extra FX: GPU LUT? Overlay?
 	+ presets smooth don't works here.
 
+	BUG: getting params from parent scope..
+	ofParameterGroup params_Preset;
+	params_Preset.setName("Preset");
+	params_Preset.add(channelFx.params_Preset);
+	params_Preset.add(channelFx.getParameters_Preset());
+
 */
 
 //----
@@ -173,6 +179,9 @@ private:
 	ofxSurfing_ImGui_Manager guiManager;
 
 	void drawImGui();
+	void drawImGuiMain();
+	void drawImGuiControls();
+	void drawImGuiUsers();
 
 	// Styles
 	void setupStyles();
@@ -191,7 +200,7 @@ private:
 	//--
 
 	//TODO:
-	// trig to implement workflow collapse / expand groups not working...
+	// workflow collapse / expand groups
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 
@@ -204,17 +213,15 @@ private:
 	ImGuiTreeNodeFlags fgT6;
 #endif
 
-	SurfingImGuiTypesGroups fgG1;
-	SurfingImGuiTypesGroups fgG2;
-	SurfingImGuiTypesGroups fgG3;
-#ifdef USE_FX_DELAYS
-	SurfingImGuiTypesGroups fgG4;
-	SurfingImGuiTypesGroups fgG5;
-#endif
+	SurfingImGuiTypesGroups fg = OFX_IM_GROUP_DEFAULT;
+
+	ImGuiCond cond = ImGuiCond_Always;
 
 #endif
 
 	//--
+
+private:
 
 	ofParameter<bool> ENABLE_Monochrome_PRE{ "ENABLE_Monochrome_PRE", false };
 	ofParameter<bool> ENABLE_ThreeTones_PRE{ "ENABLE_ThreeTones_PRE", false };
@@ -245,7 +252,7 @@ public:
 
 	ofParameter<bool> bGui{ "FX CH", true }; // all gui
 	ofParameter<bool> bGui_User{ "FX CH USER", true }; // user gui
-	ofParameter<bool> bGui_Edit{ "FX CH EDIT", false };
+	ofParameter<bool> bGui_Controls{ "FX CH EDIT", false };
 
 	ofParameter<bool> bEnable_Fx; // main enabler/bypass toggle
 	ofParameter<int> indexFx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
@@ -284,6 +291,24 @@ public:
 	ofParameterGroup params_Enablers;
 	ofParameterGroup params_Preset;
 	ofParameterGroup params_Control;
+	
+	//TODO:
+	// test bug
+	//--------------------------------------------------------------
+	ofParameterGroup& getParameters() {
+		static std::unique_ptr<ofParameterGroup> group;
+
+		if (!group) {
+
+			group = std::make_unique<ofParameterGroup>("_preset_");
+
+			group->add(params_Enablers);
+			//group->add(params_Preset);
+		}
+		return *group;
+	}
+
+	ofParameterGroup pg;
 
 	//--
 
