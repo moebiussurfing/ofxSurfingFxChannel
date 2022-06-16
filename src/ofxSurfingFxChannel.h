@@ -13,16 +13,16 @@
 	TODO:
 
 	+ fix auto populate more presets always..
-	+ fix groups GUI workflow expand/collapse on ImGui.
 	+ add one extra FX: GPU LUT? Overlay?
 	+ presets smooth don't works here.
+	+ workflow expand/collapse on ImGui https://github.com/ocornut/imgui/issues/1131
 
-	BUG: getting params from parent scope..
+	//BUG: 
+	//getting params from parent scope..
 	ofParameterGroup params_Preset;
 	params_Preset.setName("Preset");
 	params_Preset.add(channelFx.params_Preset);
 	params_Preset.add(channelFx.getParameters_Preset());
-
 */
 
 //----
@@ -250,9 +250,9 @@ public:
 
 public:
 
-	ofParameter<bool> bGui{ "FX CH", true }; // all gui
-	ofParameter<bool> bGui_User{ "FX CH USER", true }; // user gui
-	ofParameter<bool> bGui_Controls{ "FX CH EDIT", false };
+	ofParameter<bool> bGui{ "FXCH", true }; // all gui
+	ofParameter<bool> bGui_Controls{ "FXCH CONTROLS", true };
+	ofParameter<bool> bGui_User{ "FXCH USER", false }; // user gui
 
 	ofParameter<bool> bEnable_Fx; // main enabler/bypass toggle
 	ofParameter<int> indexFx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
