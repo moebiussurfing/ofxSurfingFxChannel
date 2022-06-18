@@ -200,7 +200,7 @@ void ofxSurfingFxChannel::startup()
 	refresh_GuiMinimize();
 
 	//--
-	 
+
 	//TODO:
 	//bug crashing ofx SurfingFxPost
 	pg.setName("fxparams");
@@ -1010,21 +1010,22 @@ void ofxSurfingFxChannel::drawImGuiMain()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::drawImGuiUsers()
 {
-	if (bGui_Controls) {
-		ImVec2 p;
-		ImGuiContext* GImGui = ImGui::GetCurrentContext();
-		ImGuiContext& g = *GImGui;
-		for (ImGuiWindow* window : g.WindowsFocusOrder)
-		{
-			if (window->WasActive && window->Name == bGui_Controls.getName())
+	if (bGui_User)
+		if (bGui_Controls) {
+			ImVec2 p;
+			ImGuiContext* GImGui = ImGui::GetCurrentContext();
+			ImGuiContext& g = *GImGui;
+			for (ImGuiWindow* window : g.WindowsFocusOrder)
 			{
-				p = window->Pos + ImVec2(window->Size.x, 0);
-				break;
+				if (window->WasActive && window->Name == bGui_Controls.getName())
+				{
+					p = window->Pos + ImVec2(window->Size.x, 0);
+					break;
+				}
 			}
+			ImGuiCond cond = ImGuiCond_Always;
+			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
 		}
-		ImGuiCond cond = ImGuiCond_Always;
-		ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
-	}
 
 	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
 
@@ -1093,29 +1094,29 @@ void ofxSurfingFxChannel::drawImGuiControls()
 	if (guiManager.beginWindow(bGui_Controls))
 	{
 		guiManager.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
-		if (!guiManager.bMinimize && frag1.active) guiManager.AddGroup(frag1.parameters, fgT1, fg, cond);
+		if (/*!guiManager.bMinimize && */frag1.active) guiManager.AddGroup(frag1.parameters, fgT1, fg, cond);
 
 		guiManager.AddSpacingSeparated();
 
 		guiManager.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
-		if (!guiManager.bMinimize && frag2.active) guiManager.AddGroup(frag2.parameters, fgT2, fg, cond);
+		if (/*!guiManager.bMinimize && */frag2.active) guiManager.AddGroup(frag2.parameters, fgT2, fg, cond);
 
 		guiManager.AddSpacingSeparated();
 
 		guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
-		if (!guiManager.bMinimize && frag3.active) guiManager.AddGroup(frag3.parameters, fgT3, fg, cond);
+		if (/*!guiManager.bMinimize && */frag3.active) guiManager.AddGroup(frag3.parameters, fgT3, fg, cond);
 
 
 #ifdef USE_FX_DELAYS	
 		guiManager.AddSpacingSeparated();
 
 		guiManager.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
-		if (!guiManager.bMinimize && frag4.active) guiManager.AddGroup(frag4.parameters, fgT4, fg, cond);
+		if (/*!guiManager.bMinimize && */frag4.active) guiManager.AddGroup(frag4.parameters, fgT4, fg, cond);
 
 		guiManager.AddSpacingSeparated();
 
 		guiManager.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
-		if (!guiManager.bMinimize && frag5.active) guiManager.AddGroup(frag5.parameters, fgT5, fg, cond);
+		if (/*!guiManager.bMinimize && */frag5.active) guiManager.AddGroup(frag5.parameters, fgT5, fg, cond);
 #endif					
 
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
