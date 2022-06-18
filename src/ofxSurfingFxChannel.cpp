@@ -1011,21 +1011,40 @@ void ofxSurfingFxChannel::drawImGuiMain()
 void ofxSurfingFxChannel::drawImGuiUsers()
 {
 	if (bGui_User)
-		if (bGui_Controls) {
-			ImVec2 p;
-			ImGuiContext* GImGui = ImGui::GetCurrentContext();
-			ImGuiContext& g = *GImGui;
-			for (ImGuiWindow* window : g.WindowsFocusOrder)
-			{
-				if (window->WasActive && window->Name == bGui_Controls.getName())
-				{
-					p = window->Pos + ImVec2(window->Size.x, 0);
-					break;
-				}
+	{
+		bool bready = false;
+		ImVec2 p;
+		ImGuiContext* GImGui = ImGui::GetCurrentContext();
+		ImGuiContext& g = *GImGui;
+		for (ImGuiWindow* window : g.WindowsFocusOrder)
+		{
+			string n;
+			if (bGui_Controls) {
+				n = bGui_Controls.getName();
+				bready = true;
 			}
+			else if (bGui_User && bGui) {
+				n = bGui.getName();
+				bready = true;
+			}
+			else {
+				bready = false;
+				break;
+			}
+
+			if (window->WasActive && window->Name == n)
+			{
+				p = window->Pos + ImVec2(window->Size.x, 0);
+				break;
+			}
+		}
+
+		if (bready)
+		{
 			ImGuiCond cond = ImGuiCond_Always;
 			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
 		}
+	}
 
 	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
 
@@ -1056,7 +1075,8 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 #ifdef USE_FX_DELAYS
 			if (ENABLE_Delay) {
 				if (ENABLE_Monochrome || ENABLE_ThreeTones || ENABLE_Delay)
-					if (ENABLE_Echotrace) guiManager.AddSpacingSeparated();
+					/*if (ENABLE_Echotrace) */
+					guiManager.AddSpacingSeparated();
 				guiManager.Add(frag4.feedback, style);
 			}
 			if (ENABLE_Echotrace) {
@@ -1073,21 +1093,22 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 void ofxSurfingFxChannel::drawImGuiControls()
 {
 	if (bGui)
-	{
-		ImVec2 p;
-		ImGuiContext* GImGui = ImGui::GetCurrentContext();
-		ImGuiContext& g = *GImGui;
-		for (ImGuiWindow* window : g.WindowsFocusOrder)
+		if (bGui_Controls)
 		{
-			if (window->WasActive && window->Name == bGui.getName())
+			ImVec2 p;
+			ImGuiContext* GImGui = ImGui::GetCurrentContext();
+			ImGuiContext& g = *GImGui;
+			for (ImGuiWindow* window : g.WindowsFocusOrder)
 			{
-				p = window->Pos + ImVec2(window->Size.x, 0);
-				break;
+				if (window->WasActive && window->Name == bGui.getName())
+				{
+					p = window->Pos + ImVec2(window->Size.x, 0);
+					break;
+				}
 			}
+			ImGuiCond cond = ImGuiCond_Always;
+			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
 		}
-		ImGuiCond cond = ImGuiCond_Always;
-		ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
-	}
 
 	//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
 
@@ -1105,7 +1126,6 @@ void ofxSurfingFxChannel::drawImGuiControls()
 
 		guiManager.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
 		if (/*!guiManager.bMinimize && */frag3.active) guiManager.AddGroup(frag3.parameters, fgT3, fg, cond);
-
 
 #ifdef USE_FX_DELAYS	
 		guiManager.AddSpacingSeparated();

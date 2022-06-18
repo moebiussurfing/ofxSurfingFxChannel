@@ -9,8 +9,10 @@ ofx::dotfrag::Delay::Delay() {
     uniform( blendmode.set("BLENDMODE", 0, 0, 4), "u_blendmode" );
     source( code );
 
+ //   //TODO:
 	//blendmode_name.set("NAME", "UNKNOWN");
 	//blendmode_name.setSerializable(false);
+ //   parameters.add(blendmode_name);
 }
 
 
@@ -32,7 +34,9 @@ const std::string ofx::dotfrag::Delay::code = OFXDOTFRAGSOURCE(
     void main (void) {
         
 		//TODO:
-		if (u_feedback == 1.0f) u_feedback = 0.9995f;
+		//if (u_feedback == 1.0f) u_feedback = 0.9995f;
+		//if (u_feedback >= 1.0f) u_feedback = 0.9995f;
+        //u_feedback = ofClamp(u_feedback, 0.f, 0.95f);
 
         vec2 st = gl_FragCoord.xy/u_resolution;
         
