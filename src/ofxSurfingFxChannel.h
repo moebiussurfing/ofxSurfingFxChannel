@@ -35,7 +35,7 @@
 // 1. To include some extra FX's: 
 
 // delay and echo trace
-#define USE_FX_DELAYS	
+//#define USE_FX_DELAYS	
 
 //-
 

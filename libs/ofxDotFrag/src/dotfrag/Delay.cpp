@@ -9,9 +9,9 @@ ofx::dotfrag::Delay::Delay() {
     uniform( blendmode.set("BLENDMODE", 0, 0, 4), "u_blendmode" );
     source( code );
 
- //   //TODO:
-	//blendmode_name.set("NAME", "UNKNOWN");
-	//blendmode_name.setSerializable(false);
+    //TODO:
+	blendmode_name.set("NAME", "UNKNOWN");
+	blendmode_name.setSerializable(false);
  //   parameters.add(blendmode_name);
 }
 

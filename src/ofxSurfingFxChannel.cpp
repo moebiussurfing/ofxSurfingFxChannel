@@ -1299,7 +1299,11 @@ void ofxSurfingFxChannel::refresh_GuiWorkflow() {
 	// fold expand/collapse
 
 	// all closed
+#ifdef USE_FX_DELAYS	
 	fgT1 = fgT2 = fgT3 = fgT4 = fgT5 = fgT6 = ImGuiTreeNodeFlags_None;
+#else
+	fgT1 = fgT2 = fgT3 = fgT4 = ImGuiTreeNodeFlags_None;
+#endif
 
 	// open selected
 	switch (indexFx.get())
