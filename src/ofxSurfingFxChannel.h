@@ -34,7 +34,7 @@
 
 // 1. To include some extra FX's: 
 
-// delay and echo trace
+// DELAY and ECHO TRACE
 //#define USE_FX_DELAYS	
 
 //-
@@ -55,8 +55,6 @@
 // Option 2. 
 // A bit complex alternative.	
 //#define USE_ofxPresetsManager
-
-//-
 
 
 //----
@@ -176,7 +174,7 @@ private:
 
 private:
 
-	ofxSurfing_ImGui_Manager guiManager;
+	ofxSurfingGui ui;
 
 	void drawImGui();
 	void drawImGuiMain();
@@ -213,7 +211,7 @@ private:
 	ImGuiTreeNodeFlags fgT6;
 #endif
 
-	SurfingImGuiTypesGroups fg = OFX_IM_GROUP_DEFAULT;
+	SurfingGuiTypesGroups fg = OFX_IM_GROUP_DEFAULT;
 
 	ImGuiCond cond = ImGuiCond_Always;
 
