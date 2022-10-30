@@ -1010,6 +1010,12 @@ void ofxSurfingFxChannel::drawImGuiMain()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::drawImGuiUsers()
 {
+	if (!bGui_User) return;
+
+	if (bGui_Controls) ui.setNextWindowAfterWindowNamed(bGui_Controls);
+	else if (bGui) ui.setNextWindowAfterWindowNamed(bGui);
+
+	/*
 	if (bGui_User)
 	{
 		bool bready = false;
@@ -1045,6 +1051,7 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
 		}
 	}
+	*/
 
 	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_MINI
 
@@ -1092,9 +1099,16 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::drawImGuiControls()
 {
+	if (!bGui) return;
+	if (!bGui_Controls) return;
+
+	ui.setNextWindowAfterWindowNamed(bGui);
+
+	/*
 	if (bGui)
 		if (bGui_Controls)
 		{
+
 			ImVec2 p;
 			ImGuiContext* GImGui = ImGui::GetCurrentContext();
 			ImGuiContext& g = *GImGui;
@@ -1109,8 +1123,9 @@ void ofxSurfingFxChannel::drawImGuiControls()
 			ImGuiCond cond = ImGuiCond_Always;
 			ImGui::SetNextWindowPos(ImVec2(p.x, p.y), cond);
 		}
+	*/
 
-	//IMGUI_SUGAR__WINDOWS_CONSTRAINTSW_SMALL
+	IMGUI_SUGAR__WINDOWS_CONSTRAINTSW;
 
 	if (ui.BeginWindow(bGui_Controls))
 	{
