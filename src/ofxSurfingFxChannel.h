@@ -9,7 +9,7 @@
 //----
 
 /*
- 
+
 	TODO:
 
 	+ fix auto populate more presets always..
@@ -17,7 +17,7 @@
 	+ presets smooth don't works here.
 	+ workflow expand/collapse on ImGui https://github.com/ocornut/imgui/issues/1131
 
-	//BUG: 
+	//BUG:
 	//getting params from parent scope..
 	ofParameterGroup params_Preset;
 	params_Preset.setName("Preset");
@@ -35,7 +35,7 @@
 // 1. To include some extra FX's: 
 
 // DELAY and ECHO TRACE
-//#define USE_FX_DELAYS	
+#define USE_FX_DELAYS	
 
 //-
 
@@ -56,6 +56,10 @@
 // A bit complex alternative.	
 //#define USE_ofxPresetsManager
 
+// Option 3. 
+#ifndef USE_ofxPresetsManager || USE_ofxSurfingPresets
+#define USE_ofxSurfingPresetsLite
+#endif
 
 //----
 
@@ -78,6 +82,7 @@
 // Gui
 #ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 #include "ofxSurfingImGui.h"
+//#include "SlidersRange.h"
 #endif
 
 // Gui //-> To disable all ImGui and enable ofxGui maybe you need to do some work...
@@ -100,6 +105,11 @@
 // Option 2
 #ifdef USE_ofxPresetsManager
 #include "ofxPresetsManager.h"
+#endif
+
+// Option 3
+#ifdef USE_ofxSurfingPresetsLite
+#include "ofxSurfingPresetsLite.h"
 #endif
 
 //--
@@ -242,15 +252,25 @@ public:
 	void begin();
 	void end();
 
-	//--
+	//--	
 
 	void doReset();
+	void doReset1();
+	void doReset2();
+	void doReset3();
+
+#ifdef USE_FX_DELAYS
+	void doReset4();
+	void doReset5();
+#endif
 
 public:
 
-	ofParameter<bool> bGui{ "FXCH", true }; // all gui
-	ofParameter<bool> bGui_Controls{ "FXCH CONTROLS", true };
-	ofParameter<bool> bGui_User{ "FXCH USER", false }; // user gui
+	ofParameter<bool> bGui{ "FX CHANNEL", true }; // all gui
+	//ofParameter<bool> bGui{ "FXCH", true }; // all gui
+
+	ofParameter<bool> bGui_Controls{ "FX CONTROLS", true };
+	ofParameter<bool> bGui_User{ "FX USER", false }; // user gui
 
 	ofParameter<bool> bEnable_Fx; // main enabler/bypass toggle
 	ofParameter<int> indexFx{ "FX", 1, 1, 3 };//select the fx to edit/show gui panel
@@ -260,7 +280,7 @@ private:
 	ofParameter<std::string> indexFx_Name{ "Name","_" };//fx name
 
 	ofParameter<bool> bSolo{ "Solo", false };//mute the other fx
-	ofParameter<bool> bReset{ "Reset", false };//reset selected fx
+	ofParameter<bool> bResetAll{ "Reset All", false };//reset selected fx
 	ofParameter<bool> bAll{ "All", false };
 	ofParameter<bool> bNone{ "None", false };
 	ofParameter<bool> bKeys{ "Keys", true };
@@ -289,7 +309,7 @@ public:
 	ofParameterGroup params_Enablers;
 	ofParameterGroup params_Preset;
 	ofParameterGroup params_Control;
-	
+
 	//TODO:
 	// test bug
 	//--------------------------------------------------------------
@@ -367,12 +387,23 @@ private:
 	ofx::dotfrag::ThreeTones frag2;
 	ofx::dotfrag::HSB frag3;
 
+	ofParameter<bool> bReset11{ "Reset11", false };
+	ofParameter<void> bReset1{ "Reset"};
+	ofParameter<void> bReset2{ "Reset" };
+	ofParameter<void> bReset3{ "Reset" };
+
 	// Fx Extra
 #ifdef USE_FX_DELAYS
 	ofx::dotfrag::Delay frag4;
 	ofx::dotfrag::EchoTrace frag5;
 	//ofx::dotfrag::Twist frag6;
+
+	ofParameter<void> bReset4{ "Reset" };
+	ofParameter<void> bReset5{ "Reset" };
+	//ofParameter<void> bReset6{ "Reset" };
 #endif
+
+	ofEventListeners listeners;
 
 	//--
 
@@ -411,6 +442,13 @@ private:
 	void setup_PresetsManager();
 	ofParameterGroup params_PresetsManagerTools{ "> PRESETS" };
 
+#endif
+
+	//-
+
+	// Option 3
+#ifdef USE_ofxSurfingPresetsLite
+	ofxSurfingPresetsLite presetsManager;
 #endif
 
 	//--
@@ -493,7 +531,7 @@ public:
 		else if (!bGui) setVisible_PresetClicker(false);
 
 #endif
-}
+	}
 
 	//--------------------------------------------------------------
 	void setKeysEnable(bool b) {

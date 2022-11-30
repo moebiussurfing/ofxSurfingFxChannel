@@ -37,6 +37,7 @@ const std::string ofx::dotfrag::Delay::code = OFXDOTFRAGSOURCE(
 		//if (u_feedback == 1.0f) u_feedback = 0.9995f;
 		//if (u_feedback >= 1.0f) u_feedback = 0.9995f;
         //u_feedback = ofClamp(u_feedback, 0.f, 0.95f);
+        //u_feedback = min(u_feedback, 0.98f);
 
         vec2 st = gl_FragCoord.xy/u_resolution;
         
