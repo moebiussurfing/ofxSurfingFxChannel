@@ -149,7 +149,7 @@ void ofxSurfingFxChannel::fboAllocate()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setupGui()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__);
 
 	//-
 
@@ -176,7 +176,7 @@ void ofxSurfingFxChannel::setupGui()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::setup()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__);
 
 	fboAllocate();
 
@@ -196,13 +196,13 @@ void ofxSurfingFxChannel::setup()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::startupDelayed()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__);
 }
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::startup()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__);
 
 	//-
 
@@ -355,14 +355,14 @@ void ofxSurfingFxChannel::setup_Params()
 
 	// Resets
 
-	frag1.parameters.add(bReset1);
-	frag1.parameters.add(bReset11);
-	frag2.parameters.add(bReset2);
-	frag3.parameters.add(bReset3);
-#ifdef USE_FX_DELAYS
-	frag4.parameters.add(bReset4);
-	frag5.parameters.add(bReset5);
-#endif
+//	frag1.parameters.add(bReset1);
+//	//frag1.parameters.add(bReset11);
+//	frag2.parameters.add(bReset2);
+//	frag3.parameters.add(bReset3);
+//#ifdef USE_FX_DELAYS
+//	frag4.parameters.add(bReset4);
+//	frag5.parameters.add(bReset5);
+//#endif
 
 	listeners.push(bReset1.newListener([this] {
 		doReset1();
@@ -535,7 +535,7 @@ void ofxSurfingFxChannel::Changed(ofAbstractParameter& e)
 	if (bDISABLE_CALLBACKS) return;
 
 	std::string name = e.getName();
-	ofLogNotice(__FUNCTION__) << name << " : " << e;
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << name << " : " << e;
 
 	//--
 
@@ -836,7 +836,7 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs& eventArgs)
 	if (!bKeys) return;
 
 	const int& key = eventArgs.key;
-	ofLogNotice(__FUNCTION__) << (char)key << " [" << key << "]";
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << (char)key << " [" << key << "]";
 
 	// modifiers
 	bool mod_COMMAND = eventArgs.hasModifier(OF_KEY_COMMAND);
@@ -847,10 +847,10 @@ void ofxSurfingFxChannel::keyPressed(ofKeyEventArgs& eventArgs)
 	bool debug = false;
 	if (debug)
 	{
-		ofLogNotice(__FUNCTION__) << "mod_COMMAND : " << (mod_COMMAND ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_CONTROL : " << (mod_CONTROL ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_ALT     : " << (mod_ALT ? "ON" : "OFF");
-		ofLogNotice(__FUNCTION__) << "mod_SHIFT   : " << (mod_SHIFT ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << "mod_COMMAND : " << (mod_COMMAND ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << "mod_CONTROL : " << (mod_CONTROL ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << "mod_ALT     : " << (mod_ALT ? "ON" : "OFF");
+		ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__) << "mod_SHIFT   : " << (mod_SHIFT ? "ON" : "OFF");
 	}
 
 	//-
@@ -1066,7 +1066,8 @@ void ofxSurfingFxChannel::drawImGuiMain()
 
 		// Controls
 
-		if (!ui.bMinimize) {
+		if (!ui.bMinimize&&bGui_Controls) 
+		{
 			AddSpacingSeparated();
 			ui.AddGroup(params_Preview, ImGuiTreeNodeFlags_None);
 		}
@@ -1112,20 +1113,21 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 
 	if (ui.BeginWindow(bGui_User))
 	{
+
+
 		static SurfingGuiTypes style = OFX_IM_HSLIDER_MINI;
 		static SurfingGuiTypes style2 = OFX_IM_KNOB_TICKKNOB;
 		//static SurfingGuiTypes style = OFX_IM_HSLIDER_SMALL;
 
 		if (ENABLE_Monochrome)
 		{
-			ui.Add(frag1.low, style);
-			ui.Add(frag1.high, style);
+			ui.AddLabelBig("MONOCHROME", false, true);
 
-			//ui.Add(frag1.low, style2, 2, true);
-			//ui.Add(frag1.high, style2, 2);
+			ui.Add(frag1.low, style2, 2, true);
+			ui.Add(frag1.high, style2, 2);
 
-			//ui.AddLabel("MONOCHROME LOW/HIGH");
-
+			////TODO:
+			////Range
 			//string n = "MONOCHR";
 			//float power = 1; 
 			//float _sp = ui.getWidgetsSpacingX();
@@ -1136,42 +1138,41 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 			//ImVec2 shape = ImVec2(_w, _h);
 			////ImVec2 shape = ImVec2(-1, -1);
 			//bool bfullsize = true;
-			//ofxImGuiSurfing::AddRangeParam(n, frag1.low, frag1.high, ss.c_str(), power, shape, bfullsize, true);
+			//bool bNoLabel = true;
+			//ofxImGuiSurfing::AddRangeParam(n, frag1.low, frag1.high, ss.c_str(), power, shape, bfullsize, bNoLabel);
 			//ImGui::PopItemWidth();
 
 			//ofxImGuiSurfing::AddRangeParam("MONOCHROME", frag1.low, frag1.high);
 		}
+
 		if (ENABLE_ThreeTones)
 		{
 			if (ENABLE_Monochrome) ui.AddSeparator();
-			ui.Add(frag2.mix, style);
 
-			//ui.Add(frag2.thresholds[0], style);
-			//ui.Add(frag2.thresholds[1], style);
+			ui.AddLabelBig("THREETONES", false, true);
+
+			if (!bGui_Controls) {
+				for (size_t i = 0; i < frag2.colors.size(); i++) {
+					ui.Add(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
+					if (i < frag2.colors.size() - 1)ImGui::SameLine();
+				}
+			}
 
 			ui.Add(frag2.thresholds[0], style2, 2, true);
 			ui.Add(frag2.thresholds[1], style2, 2);
 
-			ui.Add(frag2.fade, style);
+			ui.Add(frag2.mix, style2, 2, true);
+			ui.Add(frag2.fade, style2, 2);
 		}
+
 		if (ENABLE_HSB)
 		{
 			if (ENABLE_Monochrome || ENABLE_ThreeTones) ui.AddSpacingSeparated();
-			//if (!ENABLE_Monochrome) ui.Add(frag3.hue, style);
 
-			//ui.Add(frag3.brightness, style);
-			//ui.Add(frag3.contrast, style);
+			ui.AddLabelBig("HSB", false, true);
 
-			//if (!ENABLE_Monochrome) {
-			//	ui.Add(frag3.hue, style2, 3, true);
-			//	ui.Add(frag3.brightness, style2, 3, true);
-			//	ui.Add(frag3.contrast, style2, 3);
-			//}
-			//else 
-			{
-				ui.Add(frag3.brightness, style2, 2, true);
-				ui.Add(frag3.contrast, style2, 2);
-			}
+			ui.Add(frag3.brightness, style2, 2, true);
+			ui.Add(frag3.contrast, style2, 2);
 		}
 
 #ifdef USE_FX_DELAYS
@@ -1180,17 +1181,25 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 			if (ENABLE_Monochrome || ENABLE_ThreeTones || ENABLE_Delay)
 				/*if (ENABLE_Echotrace) */
 				ui.AddSpacingSeparated();
+			ui.AddLabelBig("DELAY", false, true);
+			
+			if (!bGui_Controls) ui.AddCombo(frag4.blendmode, blendmode_names);
 			ui.Add(frag4.feedback, style);
 		}
+
 		if (ENABLE_Echotrace)
 		{
 			ui.AddSpacingSeparated();
+			ui.AddLabelBig("ECHOTRACE", false, true);
 			ui.Add(frag5.gain, style);
 		}
 #endif
+		//--
+
 		if (!bGui_Controls)
 		{
 			ui.AddSpacingSeparated();
+
 			ui.Add(bResetAll, OFX_IM_TOGGLE_SMALL);
 		}
 		ui.EndWindow();
@@ -1210,35 +1219,94 @@ void ofxSurfingFxChannel::drawImGuiControls()
 	if (ui.BeginWindow(bGui_Controls))
 	{
 		ui.Add(ENABLE_Monochrome, OFX_IM_TOGGLE_BIG);
-		if (/*!ui.bMinimize && */frag1.active) ui.AddGroup(frag1.parameters, fgT1, fg, cond);
+		if (ENABLE_Monochrome) {
+			string n = "##";
+			n += ENABLE_Monochrome.getName();
+			if (ui.BeginTree(n, false, true, fgT1)) {
+				ui.Add(frag1.low, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag1.high, OFX_IM_HSLIDER_MINI);
 
+				ui.AddSpacing();
+				ui.Add(bReset1, OFX_IM_BUTTON_SMALL);
+				ui.EndTree();
+			}
+		}
 		ui.AddSpacingSeparated();
 
 		ui.Add(ENABLE_ThreeTones, OFX_IM_TOGGLE_BIG);
-		if (/*!ui.bMinimize && */frag2.active) ui.AddGroup(frag2.parameters, fgT2, fg, cond);
+		if (ENABLE_ThreeTones) {
+			string n = "##";
+			n += ENABLE_ThreeTones.getName();
+			if (ui.BeginTree(n, false, true, fgT2)) {
+				ui.Add(frag2.mix, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag2.fade, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag2.thresholds[0], OFX_IM_HSLIDER_MINI);
+				ui.Add(frag2.thresholds[1], OFX_IM_HSLIDER_MINI);
 
+				for (size_t i = 0; i < frag2.colors.size(); i++) {
+					ui.Add(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
+					if (i < frag2.colors.size() - 1)ImGui::SameLine();
+				}
+
+				ui.AddSpacing();
+				ui.Add(bReset2, OFX_IM_BUTTON_SMALL);
+				ui.EndTree();
+			}
+		}
 		ui.AddSpacingSeparated();
 
 		ui.Add(ENABLE_HSB, OFX_IM_TOGGLE_BIG);
-		if (/*!ui.bMinimize && */frag3.active) ui.AddGroup(frag3.parameters, fgT3, fg, cond);
+		if (ENABLE_HSB) {
+			string n = "##";
+			n += ENABLE_HSB.getName();
+			if (ui.BeginTree(n, false, true, fgT3)) {
+				ui.Add(frag3.hue, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag3.brightness, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag3.saturation, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag3.contrast, OFX_IM_HSLIDER_MINI);
 
-#ifdef USE_FX_DELAYS	
+				ui.AddSpacing();
+				ui.Add(bReset3, OFX_IM_BUTTON_SMALL);
+				ui.EndTree();
+			}
+		}
 		ui.AddSpacingSeparated();
 
+#ifdef USE_FX_DELAYS	
 		ui.Add(ENABLE_Delay, OFX_IM_TOGGLE_BIG);
-		if (/*!ui.bMinimize && */frag4.active) ui.AddGroup(frag4.parameters, fgT4, fg, cond);
+		if (ENABLE_Delay) {
+			string n = "##";
+			n += ENABLE_Delay.getName();
+			if (ui.BeginTree(n, false, true, fgT4)) {
+				ui.Add(frag4.feedback, OFX_IM_HSLIDER_MINI);
+				//ui.Add(frag4.blendmode, OFX_IM_HSLIDER_MINI);
+				ui.AddCombo(frag4.blendmode, blendmode_names);
 
+				ui.AddSpacing();
+				ui.Add(bReset4, OFX_IM_BUTTON_SMALL);
+				ui.EndTree();
+			}
+		}
 		ui.AddSpacingSeparated();
 
 		ui.Add(ENABLE_Echotrace, OFX_IM_TOGGLE_BIG);
-		if (/*!ui.bMinimize && */frag5.active) ui.AddGroup(frag5.parameters, fgT5, fg, cond);
-#endif					
+		if (ENABLE_Echotrace) {
+			string n = "##";
+			n += ENABLE_Echotrace.getName();
+			if (ui.BeginTree(n, false, true, fgT5)) {
+				ui.Add(frag5.gain, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag5.threshold, OFX_IM_HSLIDER_MINI);
+				ui.Add(frag5.invert, OFX_IM_TOGGLE_SMALL);
+				ui.Add(frag5.hardCutoff, OFX_IM_TOGGLE_SMALL);
 
-#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-		if (cond == ImGuiCond_Always) cond = ImGuiCond_Appearing;
-#endif				
-
+				ui.AddSpacing();
+				ui.Add(bReset5, OFX_IM_BUTTON_SMALL);
+				ui.EndTree();
+			}
+		}
 		ui.AddSpacingSeparated();
+#endif	
+
 		ui.Add(bResetAll, OFX_IM_TOGGLE_SMALL);
 
 		ui.EndWindow();
@@ -1250,7 +1318,7 @@ void ofxSurfingFxChannel::drawImGuiControls()
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::exit()
 {
-	ofLogNotice(__FUNCTION__);
+	ofLogNotice("ofxSurfingFxChannel")<<(__FUNCTION__);
 
 #ifdef USE_ofxPresetsManager
 	presetsManager.exit();
@@ -1284,9 +1352,10 @@ void ofxSurfingFxChannel::setupStyles() {
 
 	ui.clearStyles(); // Clear queued styles if there where previously added, We can do this and changes styles on runtime!
 
+	// Previews
+
 	ui.AddStyle(indexFx, OFX_IM_HSLIDER_SMALL);
 	//ui.AddStyle(indexFx, OFX_IM_HSLIDER_MINI);//TODO: fails
-
 
 	if (ui.bMinimize)//fails
 	{
@@ -1307,31 +1376,30 @@ void ofxSurfingFxChannel::setupStyles() {
 		ui.AddStyle(bNone, OFX_IM_TOGGLE_SMALL, 2, false, 5);//spacing at end
 	}
 
-	// hide alpha on colors
-	for (size_t i = 0; i < frag2.colors.size(); i++)
-	{
-		ui.AddStyle(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
-		//ui.AddStyle(frag2.colors[i], OFX_IM_COLOR_NO_ALPHA);
-	}
-
-	SurfingGuiTypes type = OFX_IM_HIDDEN;
-	//SurfingGuiTypes type = OFX_IM_TOGGLE_BIG;
-
-	ui.AddStyle(ENABLE_Monochrome, type);
-	ui.AddStyle(ENABLE_ThreeTones, type);
-	ui.AddStyle(ENABLE_HSB, type);
-
-#ifdef USE_FX_DELAYS
-	ui.AddStyle(ENABLE_Delay, type);
-	ui.AddStyle(ENABLE_Echotrace, type);
-#endif
-
-	//all resets called "reset" share the same name / style
-	ui.AddStyle(bReset1, OFX_IM_TOGGLE_SMALL);
+//	// hide alpha on colors
+//	for (size_t i = 0; i < frag2.colors.size(); i++)
+//	{
+//		ui.AddStyle(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
+//		//ui.AddStyle(frag2.colors[i], OFX_IM_COLOR_NO_ALPHA);
+//	}
+//
+//	SurfingGuiTypes type = OFX_IM_HIDDEN;
+//	//SurfingGuiTypes type = OFX_IM_TOGGLE_BIG;
+//
+//	ui.AddStyle(ENABLE_Monochrome, type);
+//	ui.AddStyle(ENABLE_ThreeTones, type);
+//	ui.AddStyle(ENABLE_HSB, type);
+//
+//#ifdef USE_FX_DELAYS
+//	ui.AddStyle(ENABLE_Delay, type);
+//	ui.AddStyle(ENABLE_Echotrace, type);
+//#endif
+//
+//	//all resets called "reset" share the same name / style
+//	ui.AddStyle(bReset1, OFX_IM_TOGGLE_SMALL);
 
 	ui.AddStyle(bEnableGuiWorkflow, OFX_IM_HIDDEN);
 	ui.AddStyle(bKeys, OFX_IM_TOGGLE_BUTTON_ROUNDED_SMALL);
-
 }
 
 //--------------------------------------------------------------
@@ -1395,7 +1463,7 @@ void ofxSurfingFxChannel::refresh_GuiMinimize() {
 	refresh_GuiWorkflow();
 
 #endif
-}
+	}
 
 //--------------------------------------------------------------
 void ofxSurfingFxChannel::refresh_GuiWorkflow() {
@@ -1426,7 +1494,7 @@ void ofxSurfingFxChannel::refresh_GuiWorkflow() {
 
 	}
 
-	cond = ImGuiCond_Always;
+	//cond = ImGuiCond_Always;
 
 #endif
 

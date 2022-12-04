@@ -146,14 +146,14 @@ private:
 	//--------------------------------------------------------------
 	void addKeysListeners()
 	{
-		ofLogNotice(__FUNCTION__);
+		ofLogNotice("ofxSurfingFxChannel") << (__FUNCTION__);
 		ofAddListener(ofEvents().keyPressed, this, &ofxSurfingFxChannel::keyPressed);
 	};
 
 	//--------------------------------------------------------------
 	void removeKeysListeners()
 	{
-		ofLogNotice(__FUNCTION__);
+		ofLogNotice("ofxSurfingFxChannel") << (__FUNCTION__);
 		ofRemoveListener(ofEvents().keyPressed, this, &ofxSurfingFxChannel::keyPressed);
 	};
 
@@ -221,9 +221,10 @@ private:
 	ImGuiTreeNodeFlags fgT6;
 #endif
 
-	SurfingGuiTypesGroups fg = OFX_IM_GROUP_DEFAULT;
+	SurfingGuiTypesGroups fg = OFX_IM_GROUP_TREE;
+	//SurfingGuiTypesGroups fg = OFX_IM_GROUP_DEFAULT;
 
-	ImGuiCond cond = ImGuiCond_Always;
+	//ImGuiCond cond = ImGuiCond_Always;
 
 #endif
 
@@ -387,14 +388,16 @@ private:
 	ofx::dotfrag::ThreeTones frag2;
 	ofx::dotfrag::HSB frag3;
 
-	ofParameter<bool> bReset11{ "Reset11", false };
-	ofParameter<void> bReset1{ "Reset"};
+	//ofParameter<bool> bReset11{ "Reset11", false };
+	ofParameter<void> bReset1{ "Reset" };
 	ofParameter<void> bReset2{ "Reset" };
 	ofParameter<void> bReset3{ "Reset" };
 
 	// Fx Extra
 #ifdef USE_FX_DELAYS
 	ofx::dotfrag::Delay frag4;
+	std::vector<std::string> blendmode_names{ "SCREEN" ,"SUM", "LERP", "BLEND MAX" ,"BLEND MIN" };
+
 	ofx::dotfrag::EchoTrace frag5;
 	//ofx::dotfrag::Twist frag6;
 
@@ -483,7 +486,7 @@ public:
 	//--------------------------------------------------------------
 	void setPath_GlobalFolder(std::string folder)
 	{
-		ofLogNotice(__FUNCTION__) << folder;
+		ofLogNotice("ofxSurfingFxChannel") << (__FUNCTION__) << folder;
 		path_GLOBAL_Folder = folder;
 		ofxSurfingHelpers::CheckFolder(folder);
 	}

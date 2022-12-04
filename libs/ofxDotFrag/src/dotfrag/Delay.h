@@ -14,9 +14,9 @@ public:
     Delay();
     
     ofParameter<float> feedback;
-    ofParameter<int>   blendmode;
+    ofParameter<int> blendmode;
     
-    ofParameter<std::string> blendmode_name;//TODO: easy name but would be better with a callback..
+    //ofParameter<std::string> blendmode_name;//TODO: easy name but would be better with a callback..
 };
 
 }} // end namespaces
