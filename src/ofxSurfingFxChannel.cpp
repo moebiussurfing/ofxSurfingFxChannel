@@ -1153,8 +1153,9 @@ void ofxSurfingFxChannel::drawImGuiUsers()
 
 			if (!bGui_Controls) {
 				for (size_t i = 0; i < frag2.colors.size(); i++) {
-					ui.Add(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
-					if (i < frag2.colors.size() - 1)ImGui::SameLine();
+					ui.Add(frag2.colors[i], OFX_IM_COLOR_BOX_NO_NAME, frag2.colors.size());
+					//ui.Add(frag2.colors[i], OFX_IM_COLOR_BOX_NO_NAME, frag2.colors.size());
+					if (i < frag2.colors.size() - 1) ImGui::SameLine();
 				}
 			}
 
@@ -1240,13 +1241,15 @@ void ofxSurfingFxChannel::drawImGuiControls()
 			if (ui.BeginTree(n, false, true, fgT2)) {
 				ui.Add(frag2.mix, OFX_IM_HSLIDER_MINI);
 				ui.Add(frag2.fade, OFX_IM_HSLIDER_MINI);
-				ui.Add(frag2.thresholds[0], OFX_IM_HSLIDER_MINI);
-				ui.Add(frag2.thresholds[1], OFX_IM_HSLIDER_MINI);
 
 				for (size_t i = 0; i < frag2.colors.size(); i++) {
+					//ui.Add(frag2.colors[i], OFX_IM_COLOR_BOX_NO_NAME, frag2.colors.size());
+					//if (i < frag2.colors.size() - 1) ImGui::SameLine();
 					ui.Add(frag2.colors[i], OFX_IM_COLOR_NO_INPUTS_NO_ALPHA);
-					if (i < frag2.colors.size() - 1)ImGui::SameLine();
 				}
+
+				ui.Add(frag2.thresholds[0], OFX_IM_HSLIDER_MINI);
+				ui.Add(frag2.thresholds[1], OFX_IM_HSLIDER_MINI);
 
 				ui.AddSpacing();
 				ui.Add(bReset2, OFX_IM_BUTTON_SMALL);
@@ -1419,10 +1422,12 @@ void ofxSurfingFxChannel::refresh_FxName()
 	case 1: indexFx_Name = (ofToString("MONOCHROME")); break;
 	case 2: indexFx_Name = (ofToString("THREETONES")); break;
 	case 3: indexFx_Name = (ofToString("HSB")); break;
+
 #ifdef USE_FX_DELAYS			  
 	case 4: indexFx_Name = (ofToString("DELAY")); break;
 	case 5: indexFx_Name = (ofToString("ECHOTRACE")); break;
 #endif
+
 	default: indexFx_Name = (ofToString(" ")); break;
 	}
 }
