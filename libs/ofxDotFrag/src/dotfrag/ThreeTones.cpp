@@ -6,7 +6,7 @@ ofx::dotfrag::ThreeTones::ThreeTones() {
     thresholds.resize(2);
     colors.resize(3);
     
-    name("THREE TONES");
+    name("THREETONES");
     uniform( mix.set( "MIX", 1.0f, 0.0f, 1.0f), "u_mix");
     uniform(thresholds[0].set("THRESH_01", 0.0f, 0.0f, 1.0f), "u_low");
     uniform(thresholds[1].set("THRESH_12", 0.4f, 0.0f, 1.0f), "u_middle");

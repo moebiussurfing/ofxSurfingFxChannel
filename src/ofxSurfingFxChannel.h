@@ -171,8 +171,9 @@ private:
 	//--
 
 private:
-
+#ifdef USE_ofxGui
 	void refresh_GuiMinimize();
+#endif
 	void refresh_GuiWorkflow();
 
 	void refresh_FxName();
@@ -189,7 +190,7 @@ private:
 	void drawImGui();
 	void drawImGuiMain();
 	void drawImGuiControls();
-	void drawImGuiUsers();
+	void drawImGuiUser();
 
 	// Styles
 	void setupStyles();
@@ -267,8 +268,8 @@ public:
 
 public:
 
-	ofParameter<bool> bGui{ "FX CHANNEL", true }; // all gui
-	//ofParameter<bool> bGui{ "FXCH", true }; // all gui
+	//ofParameter<bool> bGui{ "FX CHANNEL", true }; // all gui
+	ofParameter<bool> bGui{ "FX CH", true }; // all gui
 
 	ofParameter<bool> bGui_Controls{ "FX CONTROLS", true };
 	ofParameter<bool> bGui_User{ "FX USER", false }; // user gui
