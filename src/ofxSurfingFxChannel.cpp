@@ -1213,12 +1213,13 @@ void ofxSurfingFxChannel::draw_ImGui_GameMode()
 		{
 
 #ifdef USE_ofxSurfingPresetsLite
-			ui.AddSpacingSeparated();
+			//ui.AddSpacingSeparated();
 
 			//ui.Add(presetsManager.bGui, OFX_IM_TOGGLE_ROUNDED_SMALL);
 			//if (presetsManager.bGui) 
 			{
-				presetsManager.drawImGui();
+				presetsManager.drawImGuiClicker();
+				//presetsManager.drawImGui();
 			}
 #endif
 		}
