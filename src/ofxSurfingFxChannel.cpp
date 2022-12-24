@@ -489,6 +489,7 @@ void ofxSurfingFxChannel::setup_Params()
 	presetsManager.setPath(path_GLOBAL_Folder);
 
 	presetsManager.AddGroup(params_Preset);
+	presetsManager.setColorized(true);
 #endif
 
 	//--
@@ -1201,6 +1202,26 @@ void ofxSurfingFxChannel::drawImGuiUser()
 			ui.Add(bResetAll, OFX_IM_TOGGLE_SMALL);
 		}
 		ui.EndWindow();
+	}
+}
+
+//--------------------------------------------------------------
+void ofxSurfingFxChannel::draw_ImGui_GameMode()
+{
+	//if (ui.bGui_GameMode)
+	{
+		{
+
+#ifdef USE_ofxSurfingPresetsLite
+			ui.AddSpacingSeparated();
+
+			//ui.Add(presetsManager.bGui, OFX_IM_TOGGLE_ROUNDED_SMALL);
+			//if (presetsManager.bGui) 
+			{
+				presetsManager.drawImGui();
+			}
+#endif
+		}
 	}
 }
 

@@ -197,6 +197,10 @@ private:
 	void ClearStyles();
 
 #endif
+	
+public:
+
+	void draw_ImGui_GameMode();
 
 	//--
 
@@ -217,6 +221,7 @@ private:
 	ImGuiTreeNodeFlags fgT2;
 	ImGuiTreeNodeFlags fgT3;
 	ImGuiTreeNodeFlags fgT4;
+
 #ifdef USE_FX_DELAYS
 	ImGuiTreeNodeFlags fgT5;
 	ImGuiTreeNodeFlags fgT6;
@@ -427,6 +432,7 @@ private:
 
 #ifdef USE_ofxSurfingPresets
 
+public:
 	ofxSurfingPresets presetsManager;
 
 #endif
@@ -452,6 +458,7 @@ private:
 
 	// Option 3
 #ifdef USE_ofxSurfingPresetsLite
+public:
 	ofxSurfingPresetsLite presetsManager;
 #endif
 
