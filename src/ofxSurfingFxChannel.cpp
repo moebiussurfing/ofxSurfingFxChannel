@@ -1151,7 +1151,7 @@ void ofxSurfingFxChannel::drawImGuiUser()
 
 			if (!bGui_Controls) {
 				for (size_t i = 0; i < frag2.colors.size(); i++) {
-					ui.Add(frag2.colors[i], OFX_IM_COLOR_BOX_NO_NAME, frag2.colors.size());
+					ui.Add(frag2.colors[i], OFX_IM_COLOR_NO_NAME, frag2.colors.size());
 					//ui.Add(frag2.colors[i], OFX_IM_COLOR_BOX_NO_NAME, frag2.colors.size());
 					if (i < frag2.colors.size() - 1) ImGui::SameLine();
 				}
