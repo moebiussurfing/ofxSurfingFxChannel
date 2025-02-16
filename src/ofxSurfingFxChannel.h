@@ -28,25 +28,26 @@
 //----
 
 
-// OPTIONAL:
+// OPTIONAL:	
 
 //-
 
-// 1. To include some extra FX's: 
-
-// DELAY and ECHO TRACE
-#define USE_FX_DELAYS	
-
-//-
-
-// 2. Pick a Gui
+// 1. Pick a Gui
 
 //#define USE_ofxGui // Simpler GUI could be activated to remove ImGui dependency.
 #define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
 
+// Don't allow the two GUIs together!
+// You just pick only one.
+#ifdef USE_ofxGui
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+#undef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
+#endif
+#endif
+
 //-
 
-// 3. Enable a Presets Manager:
+// 2. Enable a Presets Manager:
 
 // Option 1. 
 // Simpler and recommended!
@@ -58,19 +59,17 @@
 
 // Option 3. 
 #ifndef USE_ofxPresetsManager || USE_ofxSurfingPresets
+#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 #define USE_ofxSurfingPresetsLite
 #endif
-
-//----
-
-
-// Don't allow the two GUIs together!
-// You just pick only one.
-#ifdef USE_ofxGui
-#ifdef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
-#undef USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 #endif
-#endif
+
+//-
+
+// 3. To include some extra FX's: 
+
+// DELAY and ECHO TRACE
+#define USE_FX_DELAYS
 
 //----
 

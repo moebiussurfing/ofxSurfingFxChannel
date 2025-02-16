@@ -2,4 +2,3 @@ ofxImGui
 ofxSurfingFxChannel
 ofxSurfingHelpers
 ofxSurfingImGui
-ofxWindowApp

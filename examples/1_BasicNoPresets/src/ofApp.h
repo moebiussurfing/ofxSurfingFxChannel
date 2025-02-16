@@ -12,7 +12,7 @@
 
 #include "ofxSurfingFxChannel.h"
 
-#include "ofxWindowApp.h" //-> not required
+//#include "ofxWindowApp.h" //-> not required
 
 class ofApp : public ofBaseApp
 {
@@ -27,5 +27,5 @@ class ofApp : public ofBaseApp
 
 		ImageAnimated img; // -> From ofxSurfing_Widgets.h / ofxSurfingHelpers
 
-		ofxWindowApp windowApp;
+		//ofxWindowApp windowApp;
 };
