@@ -27,11 +27,12 @@ const std::string ofx::dotfrag::HSB::code = OFXDOTFRAGSOURCE(
     uniform float u_brightness;
     uniform float u_contrast;
 
-    //#define TWO_PI 6.28318530718
+    //#define TWO_PI_ 6.28318530718
 
     vec3 applyHue(vec3 aColor, float aHue)
     {
-        float angle = aHue * TWO_PI;
+        //float angle = aHue * TWO_PI_;
+		float angle = aHue * 6.28318530718;
         vec3 k = vec3(0.57735, 0.57735, 0.57735);
         float cosAngle = cos(angle);
         //Rodrigues' rotation formula
