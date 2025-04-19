@@ -9,7 +9,6 @@
 //----
 
 /*
-
 	TODO:
 
 	+ fix auto populate more presets always..
@@ -34,8 +33,8 @@
 
 // 1. Pick a Gui
 
-//#define USE_ofxGui // Simpler GUI could be activated to remove ImGui dependency.
-#define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
+#define USE_ofxGui // Simpler GUI could be activated to remove ImGui dependency.
+//#define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
 
 // Don't allow the two GUIs together!
 // You just pick only one.
@@ -69,7 +68,7 @@
 // 3. To include some extra FX's: 
 
 // DELAY and ECHO TRACE
-#define USE_FX_DELAYS
+//#define USE_FX_DELAYS
 
 //----
 
