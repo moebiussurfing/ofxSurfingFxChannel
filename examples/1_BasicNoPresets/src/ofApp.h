@@ -8,7 +8,10 @@
 // To run this example out-of-the-box you must disable the presets manager add-on
 // commenting this line on ofxSurfingFxChannel.h: 
 // //#define INCLUDE_ofxPresetsManager
-
+// comment:
+// //#define USE_ofxGui
+// uncomment
+// #define USE_IM_GUI__OFX_SURFING_FX_CHANNEL
 
 #include "ofxSurfingFxChannel.h"
 

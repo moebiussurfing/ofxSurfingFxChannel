@@ -554,3 +554,7 @@ MigrationBackup/
 .ionide/
 examples/1_BasicNoPresets/bin/imgui.ini
 examples/2_BasicPresets/bin/imgui.ini
+examples/2_Presets/bin/imgui.ini
+examples/2_Presets/config.make
+examples/3_LiveCamera/bin/imgui.ini
+examples/3_LiveCamera/config.make

@@ -3,14 +3,12 @@
 #include "ofMain.h"
 
 /*
-
 	NOTE ABOUT THIS EXAMPLE:
 
 	This example includes a Preset Manager
 	To run this example out-of-the-box you must enable the presets manager add-on
 	uncommenting this line on ofxSurfingFxChannel.h
 	#define USE_ofxSurfingPresets
-
 */
 
 
