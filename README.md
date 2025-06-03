@@ -75,13 +75,21 @@ No need to add them manually with the **oF PROJECT GENERATOR**:
   <summary>Tested Systems</summary>
   <p>
 
-  - **Windows 10** / **VS 2017-2022** / **OF ~0.11-0.12**
+  - **Windows 10** / **VS 2017-2022** / **OF ~0.11-0.12.0-0.12.1**
   </p>
 </details>
 
+## REMEMBER!
+Currently you must adapt the UI line in `ofxSurfingFxChannel.h` to your project `addons.make` file!
+```.cpp
+// 1. Pick a Gui
+#define USE_ofxGui // Simpler GUI could be activated to remove ImGui dependency.
+//#define USE_IM_GUI__OFX_SURFING_FX_CHANNEL // Powerful ImGui based. Required to use Presets Manager modes!
+```
+
 ## Author
 An addon by **@moebiusSurfing**  
-*( ManuMolina ) 2019-2022*  
+*( ManuMolina ) 2019-2025*  
 
 ### Contact / Tune
 <p>
